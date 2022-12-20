@@ -203,7 +203,7 @@ function set_sidebar_active_item(){
     var sidebar = document.getElementById('sidebar')
     var sidebar_items = sidebar.getElementsByClassName('nav-item')
     var path = window.location.pathname.replaceAll('/', '')
-    console.log(sidebar,sidebar_items,path)
+
     for (var i=0; i < sidebar_items.length; i++){
         if (sidebar_items[i].id == path){
             sidebar_items[i].className += ' active'
@@ -220,13 +220,20 @@ function pass_url_to_modal(remove_modal){
     remove_modal.addEventListener("show.bs.modal", function (event) {
         var button = event.relatedTarget; // Button that triggered the modal
         var remove_url = button.dataset.url; // Extract info from data-* attributes
-        const confirm_remove = document.getElementById('confirm-remove');
+        
+        const confirm_remove = document.getElementsByClassName('confirm-remove')[0];
         confirm_remove.href = remove_url;
-        console.log(remove_url, confirm_remove)
+        console.log(confirm_remove)
     });
 };
-const remove_modal = document.getElementById('removeModal')
-if (remove_modal !== null) {
-    pass_url_to_modal(remove_modal)
+
+const remove_transaction_modal = document.getElementById('remove-transaction-Modal')
+if (remove_transaction_modal !== null) {
+    pass_url_to_modal(remove_transaction_modal)
+}
+
+const remove_account_modal = document.getElementById('remove-account-Modal')
+if (remove_account_modal !== null) {
+    pass_url_to_modal(remove_account_modal)
 }
 

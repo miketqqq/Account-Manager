@@ -7,7 +7,7 @@
     <div class="bg-secondary text-center rounded p-4">
         <div class="d-flex align-items-center justify-content-between mb-4">
             <h6 class="mb-0">Bank Account</h6>
-            <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#bankaccountModal">
+            <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#bank-account-Modal">
                 Add a bank account</button>
         </div>
         <div class="table-responsive">
@@ -27,7 +27,10 @@
                         <td>{{bank.account_type}}</td>
                         <td>${{bank.total_amount}}</td>
                         <td><a href="{% url 'update_bank_account' bank.id %}">Edit</a></td>
-                        <td><a href="{% url 'remove_bank_ac' bank.id %}">Delete</a></td>
+                        <td><a data-url="{% url 'remove_bank_ac' bank.id %}" 
+                            class="remove-bank-account" type="button" data-bs-toggle="modal" data-bs-target="#remove-account-Modal">
+                            Delete</a>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -55,12 +58,12 @@
 <!-- Chart End -->
 
 
-<!-- Bank Account Modal -->
-<div class="modal fade" id="bankaccountModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<!-- bank-account-Modal -->
+<div class="modal fade" id="bank-account-Modal" tabindex="-1" aria-labelledby="bank-account-ModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Create a new income</h5>
+          <h5 class="modal-title" id="bank-account-ModalLabel">Create a new income</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -78,6 +81,28 @@
       </div>
     </div>
 </div>
-<!-- Bank Account Modal End -->
+<!-- bank-account-Modal End -->
 
+
+<!-- remove-account-Modal -->
+<div class="modal fade" id="remove-account-Modal" tabindex="-1" aria-labelledby="remove-account-ModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="remove-account-ModalLabel">Delete Bank Account</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="d-flex align-items-center justify-content-between">
+                <p>Are you sure you want to delete this bank account?</p>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <a class="btn btn-outline-info confirm-remove">Delete</a>
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+</div>
+<!-- remove-account-Modal End -->
 {% endblock %}

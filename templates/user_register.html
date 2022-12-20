@@ -3,14 +3,14 @@
 {% load crispy_forms_tags %}
 {% block content %}
 
-<div class="container pt-4 px-4">
-    <div class="bg-light p-4">
-        <div class="align-items-center justify-content-between">
+<div class="container-fluid pt-4 px-4">
+    <div class="bg-secondary p-4">
+        <div class="justify-content-between text-white">
             <h2>Registration</h2>
             <form method="post" action="" class="mx-auto">
                 {% csrf_token %}
                 {{ form|crispy }}
-                <input type="submit" name="create_user" value="Create">
+                <button type="submit" class="btn btn-info mt-4">Create</button>
             </form>
 
             <div class="pt-2">

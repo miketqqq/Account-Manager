@@ -2,21 +2,24 @@
 {% load static %}
 {% block content %}
 
-<!-- Form start -->
-<div class="container pt-4 px-4">
-    <div class="bg-light p-4">
-        <div class="align-items-center justify-content-between">
+<div class="container-fluid pt-4 px-4">
+    <div class="bg-secondary p-4">
+        <div class="justify-content-between text-white mb-4">
+            <h6>Transaction</h6>
+            <hr>
+        </div>
+        <div class="justify-content-between text-white mb-2">
             <form method="POST" action="">
                 {% csrf_token %}
                 {{ form.as_p }}
                 <hr>
                 <div>
-                    <button type="submit" class="btn btn-primary">Update</button>
+                    <button type="submit" class="btn btn-info">Update</button>
                     <a href="{% url 'transaction_detail' %}" class="btn btn-secondary">Back</a>
                 </div>
             </form>
         </div>
     </div>
 </div>
-<!-- Form end -->
+
 {% endblock %}

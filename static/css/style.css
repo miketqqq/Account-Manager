@@ -324,9 +324,13 @@ form > p > label {
 }
 
 .table tbody tr:hover {
-    color:#ffffff
+    color:white
 }
 
 h5.modal-title {
     color:black
+}
+
+.form-control, .form-control:focus {
+    background-color : white; 
 }
