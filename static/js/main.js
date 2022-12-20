@@ -1,6 +1,7 @@
-const red = "hsl(0, 100%, 50%)"
-const green = "hsl(120, 100%, 25%)"
-const white = "hsl(0, 100%, 100%)"
+const red = "hsl(0, 100%, 50%)"  //red
+const green = "hsl(120, 100%, 25%)"  //green
+const white = "hsl(0, 100%, 100%)"  //white
+const grid_color = "hsl(0, 0%, 50%)"  //grey
 
 function income_expense_chart(ctx1) {
     fetch(ctx1.dataset.url)
@@ -26,6 +27,31 @@ function income_expense_chart(ctx1) {
             },
             options: {
                 responsive: true,
+                elements:{
+                    point:{
+                        radius:6
+                    }
+                },
+                scales: {
+                    y: {  
+                        ticks: {
+                            color: "white", 
+                            beginAtZero: true
+                        },
+                        grid: {
+                            color: grid_color
+                        }
+                    },
+                    x: {  
+                        ticks: {
+                            color: "white",
+                            beginAtZero: true
+                        },
+                        grid: {
+                            color: grid_color
+                        }
+                    }
+                },
                 plugins:{
                     legend: {
                         labels: {
@@ -33,20 +59,6 @@ function income_expense_chart(ctx1) {
                         }
                     },
                 },
-                scales: {
-                    y: {  
-                        ticks: {
-                            color: "white", 
-                            beginAtZero: true
-                        }
-                    },
-                    x: {  
-                        ticks: {
-                            color: "white",
-                            beginAtZero: true
-                        }
-                    }
-                }
             },
             // increase spacing between legend and graph
             plugins: [{
