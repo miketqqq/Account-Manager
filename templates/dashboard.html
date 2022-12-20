@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+
+<!-- Income & Expense Start -->
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+         <!-- Net Asset Value -->
+        <div class="col-sm-6 col-xl-3">
+            <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
+                <div class="ms-3 col-9">
+                    <h6 class="mb-2">Net Asset Value</h6>
+                    <h6 class="mb-0">${{net_value}}</h6>
+                </div>
+                <i class="fa fa-coins fa-3x text-white col-3"></i>
+            </div>
+        </div>
+
+         <!-- Income & Expense -->
+        {% for main_type in data_set %}
+        <div class="col-sm-6 col-xl-3">
+            <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
+                <div class="ms-3 col-9">
+                    <h6 class="mb-2 {{main_type.nature}}-sub-total">{{main_type.nature|title}}</h6>
+                    <h6 class="mb-0">${{main_type.selected_month_total}}                        
+                        {% if main_type.monthly_change >= 0 %}
+                        <span class="monthly-change positive">(+{{main_type.monthly_change}})</span>
+                        {% else %}
+                        <span class="monthly-change negative">({{main_type.monthly_change}})</span>
+                        {% endif %}
+                    </h6>
+                </div>
+                <i class="fa fa-chart-line fa-3x text-white col-3"></i> 
+            </div>
+        </div>
+        {% endfor %}
+
+        <!-- Transaction Count -->
+        <div class="col-sm-6 col-xl-3">
+            <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
+                <div class="ms-3 col-9">
+                    <h6 class="mb-2">Transaction</h6>
+                    <h6 class="mb-0">{{transaction_count|default:0}}</h6>
+                </div>
+                <i class="fa fa-receipt fa-3x text-white col-3"></i>
+            </div>
+        </div>
+        
+    </div>
+</div>
+<!-- Income & Expense End -->
+
+
+<!-- Chart Start -->
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-sm-12 col-xl-6">
+            <div class="bg-secondary text-center rounded p-4">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <h6 class="mb-0">Income & Expense</h6>
+                    <a href="{% url 'transaction_detail' %}">Show All</a>
+                </div>
+                <div class="dashboard-chart-container">
+                    <canvas id="income-expense" data-url="{% url 'income_expense_chart' %}" width="980" height="430"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-xl-6">
+            <div class="bg-secondary text-center rounded p-4">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <h6 class="mb-0">Bank Account</h6>
+                    <a href="{% url 'bank_detail' %}">Show All</a>
+                </div>
+                <div class="dashboard-chart-container">
+                    <canvas id="bank-accounts" data-url="{% url 'bank_account_chart' %}"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Chart End -->
+
+
+<!-- Transactions Start -->
+<div class="container-fluid pt-4 px-4">
+    <div class="bg-secondary text-center rounded p-4">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <h6 class="mb-0">Recent transactions</h6>
+            Filter
+            <div>
+                <a href="{% url 'transaction_detail'%}">Detail</a>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table text-start align-middle table-hover mb-0">
+                <thead>
+                    <tr class="text-white">
+                        <th scope="col">Date</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Detail</th>
+                        <th scope="col">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for transaction in transactions %}
+                    <tr class="{{transaction.nature}}-item">
+                        <td>{{transaction.date}}</td>
+                        <td>{{transaction.category}}</td>
+                        <td>{{transaction.detail}}</td>
+                        <td>${{transaction.amount}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- Transactions End -->
+
+
+<!-- Footer Start -->
+<div class="container-fluid pt-4 px-4">
+    <div class="bg-secondary rounded-top p-4">
+        <div class="row">
+            <div class="col-12 col-sm-6 text-center text-sm-start">
+                &copy; <a href="#">Your Site Name</a>, All Right Reserved. 
+            </div>
+            <div class="col-12 col-sm-6 text-center text-sm-end">
+                <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
+                Designed By <a href="https://htmlcodex.com">HTML Codex</a>
+            </br>
+            Distributed By <a class="border-bottom" href="https://themewagon.com" target="_blank">ThemeWagon</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Footer End -->
+
+
+{% endblock %}
+
+

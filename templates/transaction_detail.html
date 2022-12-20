@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<!-- Chart Start -->
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-sm-12 col-xl-6">
+            <div class="bg-secondary text-center rounded p-4">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h6 class="mb-0">Income Category</h6>
+                </div>
+                <div class="chart-container">
+                    <canvas id="income-category" data-url="{% url 'category_chart' %}"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-xl-6">
+            <div class="bg-secondary text-center rounded p-4">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h6 class="mb-0">Expense Category</h6>
+                </div>
+                <div class="chart-container">
+                    <canvas id="expense-category"></canvas>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- Chart End -->
+
+<!-- Transactions Start -->
+<div class="container-fluid pt-4 px-4">
+    <div class="bg-secondary text-center rounded p-4">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <h6 class="mb-0">Recent transactions, Filter</h6>
+            <div>
+                <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#newincomeModal">
+                    New income
+                </button>
+                <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#newexpenseModal">
+                    New expense
+                </button>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-sm text-start align-middle table-hover mb-0">
+                <thead>
+                    <tr class="text-white">
+                        <th scope="col">Date</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Detail</th>
+                        <th scope="col">Amount</th>
+                        <th colspan='2'></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for transaction in transactions %}
+                    <tr class="{{transaction.nature}}-item">
+                        <td>{{transaction.date}}</td>
+                        <td>{{transaction.category}}</td>
+                        <td>{{transaction.detail}}</td>
+                        <td class="transaction-amount">${{transaction.amount}}</td>
+                        <td><a href="{% url 'update_transaction' transaction.nature transaction.id %}">Edit</a></td>
+                        <td><a data-url="{% url 'remove_transaction' 'transaction.nature' transaction.id %}" 
+                            class="remove-transaction" type="button" data-bs-toggle="modal" data-bs-target="#removeModal">
+                            Delete</a>
+                        </td>
+                
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- Transactions End -->
+
+
+<!-- newincomeModal -->
+<div class="modal fade" id="newincomeModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Create a new income</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <form id="income-form" method="POST" action="{% url 'create_transaction' 'income' %}">
+                    {% csrf_token %}
+                    {{ income_form.as_p }}
+                </form>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" form="income-form" class="btn btn-outline-info">Create</button>
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+</div>
+<!-- newincomeModal End -->
+
+
+<!-- newexpenseModal -->
+<div class="modal fade" id="newexpenseModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Create a new income</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <form id="expense-form" method="POST" action="{% url 'create_transaction' 'expense' %}">
+                    {% csrf_token %}
+                    {{ expense_form.as_p }}
+                </form>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" form="expense-form" class="btn btn-outline-info">Create</button>
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+</div>
+<!-- newincomeModal End -->
+
+
+<!-- removeModal -->
+<div class="modal fade" id="removeModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Delete Transaction</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <p>Are you sure you want to delete this transaction?</p>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <a href="" id="confirm-remove" class="btn btn-info">Delete</a>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+</div>
+<!-- removeModal End -->
+
+{% endblock %}

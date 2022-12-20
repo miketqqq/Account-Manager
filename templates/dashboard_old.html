@@ -1,0 +1,262 @@
+{% extends 'base.html' %}
+nav login create account
+
+Hello, name
+net asset
+
+month
+
+filter bar
+account detail
+
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-6 align-self-center">
+            <div class="row mb-2">
+                <h1>Net asset value: ${{net_value}}</h1>
+            </div>
+            <div class="row main-type mb-2">
+                {% for main_type in data_set%}
+                <div class="col">
+                    <a href="{% url 'main_type_detail' main_type.is_income %}" 
+                        class="{{main_type.is_income}}-sub-total btn btn-sm btn-outline-primary">
+                        Current Month {{main_type.is_income|title}}: ${{main_type.current_month_data.sub_total}}
+                        {% if main_type.monthly_change_data >= 0 %}
+                        <small class="positive">  (+${{main_type.monthly_change_data}})</small>
+                        {% else %}
+                        <small class="negative">  (-${{main_type.monthly_change_data}})</small>
+                        {% endif %}
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="row average">
+                {% for main_type in data_set%}
+                <div class="col-6">
+                    <button class="btn btn-outline-primary btn-sm">
+                        Monthly average {{main_type.is_income|title}}: 
+                        ${{main_type.monthly_average_data}}
+                    </button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div class="col-6 bank-accounts" >
+            <table class="table table-hover table-sm">
+                <thead>
+                    <tr>
+                        <th>Bank</th>
+                        <th>Balance</th>
+                        <th class="text-center" colspan="2">
+                            <a href="{% url 'bank_ac' 'create' %}" class="btn btn-new-account ">
+                                <small>New bank account</small></a>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for bank in banks %}
+                <tr>
+                    <td>{{bank.bank_name}}</td>
+                    <td> ${{bank.total_amount}} </td>
+                    <td class="col-2 text-center"><a href="{% url 'bank_ac' bank.id %}"
+                        class="btn btn-outline-primary btn-sm">Edit</a></td>
+                    <td class="col-2 text-center"><a href="{% url 'remove_bank_ac' bank.id %}"
+                        class="btn btn-outline-danger btn-sm">Delete</a></td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<hr>
+<div class="container lower">
+    <div class="row">
+        <div class="col-4 categories">
+            {% for main_type in data_set%}
+            <div class="row {{main_type.is_income}}-card">
+                <h6>Top 3 {{main_type.is_income}}</h6>
+                {% for category_sub_total in main_type.category_current_month %}
+                <div class="card mb-2" style="width: 30%;">
+                    <div class="card-body category-sub-total">
+                        <a href="{% url 'category_detail' category_sub_total.category %}" 
+                            class="link-primary card-text">
+                            {{category_sub_total.category}}<br> ${{category_sub_total.sub_total}}
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+        <div class="col-8 transactions">
+            <table class="table table-hover">
+                <thead">
+                    <th>Date</th>
+                    <th>Category</th>
+                    <th>Detail</th>
+                    <th>Amount</th>
+                    <th colspan="2"></th>
+                </thead>
+                <tbody>
+                    {% for transaction in transactions %}
+                    <tr class="{{transaction.is_income}}-item">
+                        <td>{{transaction.date}}</td>
+                        <td>{{transaction.category}}</td>
+                        <td>{{transaction.detail}}</td>
+                        <td>${{transaction.amount}}</td>
+                        <td><a href="{% url 'transaction' transaction.is_income transaction.id %}" 
+                            class="btn btn-outline-primary btn-sm">Edit</a></td>
+                        <td><a href="{% url 'remove_transaction' transaction.is_income transaction.id %}" 
+                            class="btn btn-outline-danger  btn-sm">Delete</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <tr>
+                <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#incomeModal">
+                    Create a new income.
+                </button></td>
+                <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#expenseModal">
+                    Create a new expense.
+                </button></td>
+            </tr>        
+        </div>
+    </div>
+
+</div>
+
+
+<!-- incomeModal -->
+<div class="modal fade" id="incomeModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Choose a category</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            Custom, Salary, Investment...
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <a class="btn btn-primary" href="{% url 'transaction' 'income' 'create' %}">Next step</a>
+        </div>
+      </div>
+    </div>
+</div>
+<!-- expenseModal -->
+<div class="modal fade" id="expenseModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Choose a category</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>Custom, Food, Transport, ...</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <a class="btn btn-primary" href="{% url 'transaction' 'expense' 'create' %}">Next step</a>
+        </div>
+      </div>
+    </div>
+</div>
+<style>
+    th, h6{
+        color:rgb(49, 30, 178);
+    }
+    td {
+        vertical-align: middle;
+    }
+    tr.expense-item {
+        color: red;
+    }
+    tr.income-item {
+        color: green;
+    }
+
+    .btn-new-account {
+        color:rgb(49, 30, 178);
+        border-color: rgb(49, 30, 178);
+        padding: 2% 6% 2% 6%;
+        border-left: 0% 0% 0% 20%;
+    }
+    .btn-new-account:hover {
+        color:white;
+        background-color: rgb(49, 30, 178);
+    }
+
+    .card {
+        text-align: center;
+        height: 140px;
+    }
+
+    small.positive {
+        color: green;
+        font-size: 8px;
+    }
+    small.positive:hover {
+        color: white;
+    }
+    small.negative {
+        color: red;
+        font-size: 8px;
+    }
+    small.negative:hover {
+        color: white;
+    }
+    div.transactions table {
+      display:block;
+      max-height:350px;
+      overflow-y:scroll;
+      width: 100%;
+    }
+    .category-sub-total {
+        font-size: 90%;
+        white-space: nowrap;
+        padding: 20px 10px 20px 10px;
+    }
+</style>
+
+{% endblock content%}
+
+
+<script>
+    changes = document.querySelectorAll('small.monthly-change');
+    changes.forEach(element => {
+        text = element.innerText
+        console.log(text)
+        if (text > 0) {
+            text = `+${text}`
+            element.classList += 'positive'
+        } else if (text < 0) {
+            text = `-${text}`
+            element.classList += 'negative'
+        }
+    });
+</script>
+
+<!-- <div class="container info-bar">
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="card">
+                <div class="card-body">
+                    Monthly change: ${{expense_monthly_change}}
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="card">
+                <div class="card-body">
+                    Monthly average expense: ${{expense_monthly_average}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div> -->

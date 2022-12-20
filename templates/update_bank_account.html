@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container pt-4 px-4">
+    <div class="bg-light rounded p-4">
+        <div class="d-flex justify-content-between mb-2">
+            <form method="POST" action="">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <hr>
+                <div>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                    <a href="{% url 'bank_detail' %}" class="btn btn-secondary">Back</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

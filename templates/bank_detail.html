@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<!-- Account Table Start -->
+<div class="container-fluid pt-4 px-4">
+    <div class="bg-secondary text-center rounded p-4">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <h6 class="mb-0">Bank Account</h6>
+            <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#bankaccountModal">
+                Add a bank account</button>
+        </div>
+        <div class="table-responsive">
+            <table class="table text-start align-middle table-hover mb-0">
+                <thead>
+                    <tr class="text-white">
+                        <th scope="col">Bank</th>
+                        <th scope="col">Account Type</th>
+                        <th scope="col">Current Balance</th>
+                        <th colspan='2'></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for bank in banks %}
+                    <tr>
+                        <td>{{bank.bank_name}}</td>
+                        <td>{{bank.account_type}}</td>
+                        <td>${{bank.total_amount}}</td>
+                        <td><a href="{% url 'update_bank_account' bank.id %}">Edit</a></td>
+                        <td><a href="{% url 'remove_bank_ac' bank.id %}">Delete</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- Account Table End -->
+
+<!-- Chart Start -->
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4 justify-content-center">
+        <div class="col-sm-12 col-xl-6 align-self-center">
+            <div class="bg-secondary text-center rounded p-4">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h6 class="mb-0">Bank Account</h6>
+                </div>
+                <div class="chart-container">
+                    <canvas id="bank-accounts" data-url="{% url 'bank_account_chart' %}"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Chart End -->
+
+
+<!-- Bank Account Modal -->
+<div class="modal fade" id="bankaccountModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Create a new income</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <form id="bank-ac-form" method="POST" action="{% url 'create_bank_account' %}">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                </form>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" form="bank-ac-form" class="btn btn-outline-info">Create</button>
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+</div>
+<!-- Bank Account Modal End -->
+
+{% endblock %}
