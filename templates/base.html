@@ -53,13 +53,14 @@
         <div class="content">
             <!-- Navbar Start -->
             <nav class="container-fluid navbar-expand bg-secondary navbar-dark sticky-top px-4 py-3">
-                <div class="row d-flex flex-wrap text-center align-items-center justify-content-around">
-                    <div class="col-lg-12 d-flex flex-wrap">
-                        {% for x in 'xxxxxxxxxxxx' %}
-                        <div class="col-1">
-                            <a href="{% url 'month_selector' forloop.counter %}">{{ forloop.counter|number_to_month }}</a>
-                        </div>
-                        {% endfor %}
+                <div class="row text-center align-items-center justify-content-around">
+                    <div class="col-lg-12">
+                        {% if user.is_authenticated %}
+                        {% now "j" as current_month %}
+                        <a class="btn btn-outline-info" href="{% url 'month_selector' 'previous' %}">&lt</a>
+                        <a class="btn btn-outline-info">{{ request.session.display_date.month|number_to_month }} {{ request.session.display_date.year }}</a>
+                        <a class="btn btn-outline-info" href="{% url 'month_selector' 'next' %}">&gt</a>
+                        {% endif %}
                     </div>
                 </div>
             </nav>

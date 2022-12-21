@@ -5,17 +5,37 @@ from django.contrib.auth.decorators import login_required
 from .models import *
 from .forms import *
 from .utils import main_type_data_set, displayed_month, get_object_or_none
+from chart.utils import today
 
-
-def month_selector(request, selected_month):
+def month_selector(request, button):
     """user selects which month of data to display"""
-    request.session['display_month'] = selected_month
+    month = request.session['display_date']['month']
+    year = request.session['display_date']['year']
+
+    if button == 'previous':
+        if month > 1:
+            month -= 1
+        else:
+            month = 12
+            year -= 1
+    elif button == 'next':
+        if month < 12:
+            month += 1
+        else:
+            month = 1
+            year += 1
+            
+    request.session['display_date'] = {'month': month, 'year': year}
+
     return redirect(request.META['HTTP_REFERER'])
 
 @login_required(login_url='/user_login')
 def dashboard(request):
-    selected_month = displayed_month(request)
-    
+    if not request.session.get('display_date'):
+        request.session['display_date'] = {'month': today.month, 'year': today.year}
+
+    selected_month = request.session['display_date']['month']
+
     banks = BankAccount.objects.filter(user=request.user)
     net_value = sum(banks.values_list('total_amount', flat=True))
 
@@ -166,11 +186,13 @@ def update_transaction(request, nature, transaction_id):
     return render(request, 'update_transaction.html', context)
 
 def remove_transaction(request, nature, transaction_id):
+    print('---------')
     try:
         transaction = Transaction.objects.select_related('bank').get(id=transaction_id, user=request.user)
     except Transaction.DoesNotExist or Transaction.MultipleObjectsReturned:
         transaction = None
-
+        
+    
     #return to home if no such object or the user does not own the object
     if (not transaction) or (request.user != transaction.user):
         return redirect('transaction_detail')
@@ -204,19 +226,3 @@ def main_type_detail(request, nature):
     context = {'transactions': transactions, 'sub_total': sub_total}
     return render(request, 'detail_page.html', context)
 
-
-    
- 
-"""  use a bootstrap model to render the category button, or customize one.
- if customize, category/custom
- form = customform()
- cate = form.save(commit=False)
- cate.user = request.user
- return redirect('/category/' + str(cate.category))
- 
- if choose one: category/<cate:str>   
- form = tranform()
- tranform(reuqest.POST), tran = form.save(commit=False)
- tran.cate = cate  """
-    
-#transaction filter according to income/expense/internal transfer?

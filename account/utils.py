@@ -45,7 +45,8 @@ def main_type_data_set(main_type_model, selected_month):
 
 def displayed_month(request):
     """get the user's selection, or use current month as default"""
-    return int(request.session.get('display_month', current_month))
+
+    return int(request.session['display_date']['month'])
 
 
 def get_object_or_none(model, id, user):

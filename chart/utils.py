@@ -6,7 +6,7 @@ from statistics import mean
 import datetime
 
 today = datetime.date.today()
-current_month = 11 #today.month
+current_month = today.month
 
 def group_by_month(transaction_data, sub_type='nature'):
     """group data by category."""

@@ -3,7 +3,7 @@ from . import views
 
 urlpatterns = [
     path('', views.dashboard, name="dashboard"),
-    path('month_selector/<int:selected_month>', views.month_selector, name="month_selector"),
+    path('month_selector/<str:button>', views.month_selector, name="month_selector"),
     
     path('bank_detail/', views.bank_detail, name="bank_detail"),
     path('create_bank_account/', views.create_bank_account, name="create_bank_account"),
