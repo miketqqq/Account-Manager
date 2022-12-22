@@ -34,3 +34,10 @@ def user_login(request):
 def user_logout(request):
     logout(request)
     return redirect("dashboard")
+
+def demo_login(request):
+    
+    user = authenticate(request, username='demo_user', password='Demo_User_Password')
+    login(request, user)
+
+    return redirect('dashboard')

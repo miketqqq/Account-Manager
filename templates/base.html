@@ -58,7 +58,7 @@
                         {% if user.is_authenticated %}
                         {% now "j" as current_month %}
                         <a class="btn btn-outline-info" href="{% url 'month_selector' 'previous' %}">&lt</a>
-                        <a class="btn btn-outline-info">{{ request.session.display_date.month|number_to_month }} {{ request.session.display_date.year }}</a>
+                        <a class="btn btn-outline-info">{{ request.session.display_month|number_to_month }} {{ request.session.display_year }}</a>
                         <a class="btn btn-outline-info" href="{% url 'month_selector' 'next' %}">&gt</a>
                         {% endif %}
                     </div>
