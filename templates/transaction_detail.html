@@ -49,6 +49,7 @@
                 <thead>
                     <tr class="text-white">
                         <th scope="col">Date</th>
+                        <th scope="col">Nature</th>
                         <th scope="col">Category</th>
                         <th scope="col">Detail</th>
                         <th scope="col">Amount</th>
@@ -58,7 +59,8 @@
                 <tbody>
                     {% for transaction in transactions %}
                     <tr class="{{transaction.nature}}-item">
-                        <td>{{transaction.date}}</td>
+                        <td class="transaction-amount">{{transaction.date}}</td>
+                        <td class="transaction-amount">{{transaction.nature|title}}</td>
                         <td>{{transaction.category}}</td>
                         <td>{{transaction.detail}}</td>
                         <td class="transaction-amount">${{transaction.amount}}</td>
@@ -67,7 +69,6 @@
                             class="remove-transaction" type="button" data-bs-toggle="modal" data-bs-target="#remove-transaction-Modal">
                             Delete</a>
                         </td>
-                
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -109,7 +110,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="new-expense-ModalLabel">Create a new income</h5>
+          <h5 class="modal-title" id="new-expense-ModalLabel">Create a new expense</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">

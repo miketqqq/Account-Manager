@@ -9,10 +9,8 @@ import datetime
 
 def income_expense_chart(request):
     """data for line chart"""
-    income = Income.objects.all()
-    expense = Expense.objects.all()
-    #income = Income.objects.filter(user=request.user)
-    #expense = Expense.objects.filter(user=request.user)
+    income = Income.objects.filter(user=request.user)
+    expense = Expense.objects.filter(user=request.user)
 
     income_by_month_data = group_by_month(income)
     expense_by_month_data = group_by_month(expense)
@@ -57,8 +55,12 @@ def bank_account_chart(request):
     """data for pie chart"""
     banks = BankAccount.objects.filter(user=request.user).values('bank_name', 'total_amount')
 
-    label = list(banks.values_list('bank_name', flat=True))
-    balance = list(banks.values_list('total_amount', flat=True))
+    if not banks:
+        label = ['Example']
+        balance = [10]
+    else:
+        label = list(banks.values_list('bank_name', flat=True))
+        balance = list(banks.values_list('total_amount', flat=True))
 
     context = {
         'label': label,

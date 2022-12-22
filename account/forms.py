@@ -9,6 +9,10 @@ class BankAccountForm(ModelForm):
          exclude = ['date','user']
 
 class IncomeForm(ModelForm):
+    def __init__(self, user, *args, **kwargs):
+        super(IncomeForm, self).__init__(*args, **kwargs)
+        self.fields['bank'].queryset = BankAccount.objects.filter(user=user)
+
     class Meta:
          model = Income
          exclude = ['user', 'nature']
@@ -18,6 +22,10 @@ class IncomeForm(ModelForm):
         } 
 
 class ExpenseForm(ModelForm):
+    def __init__(self, user, *args, **kwargs):
+        super(ExpenseForm, self).__init__(*args, **kwargs)
+        self.fields['bank'].queryset = BankAccount.objects.filter(user=user)
+
     class Meta:
          model = Expense
          exclude = ['user', 'nature']
@@ -26,13 +34,3 @@ class ExpenseForm(ModelForm):
             attrs={'type':'date'})
         } 
 
-
-"""
-#category = forms.ChoiceField(choices=gather_choices)
-def gather_choices():
-    customs = CustomExpense.objects.all()
-    custom_choices=[]
-    for custom in customs:
-        new_item = (f"{custom.custom_category}", f"{custom.custom_category}")
-        custom_choices.append(new_item)
-    return Expense.expense_category + custom_choices"""

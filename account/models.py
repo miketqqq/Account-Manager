@@ -4,15 +4,12 @@ from django.core.validators import MinValueValidator
 from decimal import Decimal
 
 # Create your models here.
-"""
-class user(models.Model):
-    pass
-"""
 
 class BankAccount(models.Model):
     account_type = (
         ('Cash', 'Cash'), 
         ('Saving', 'Saving'),
+        ('Investment', 'Investment'),
         ('Credit card', 'Credit Card')) 
 
     bank_name = models.CharField(max_length=50)
@@ -42,13 +39,6 @@ class BankAccount(models.Model):
     class Meta:
         ordering = ['-date']
 
-"""class Credit_card(models.Model):
-    bank = models.ForeignKey(Bank_account, on_delete=models.CASCADE, null=True, Blank=Ture)
-    credit_amount = models.DecimalField(max_digits=12, decimal_places=2)
-    debt = models.DecimalField(max_digits=12, decimal_places=2)
-    due_date = models.DateField()
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-"""
 
 class Transaction(models.Model):
     detail = models.CharField(max_length=100)
@@ -128,18 +118,3 @@ class CustomIncome(Transaction):
     def __str__(self):
         return self.custom_category
 
-
-"""class MyModelFilter(django_filters.FilterSet):
-    Expense = django_filters.ModelMultipleChoiceFilter(
-        queryset=Expense.objects.all() + Custom_Expense.objects.filter(user=request.user)
-def departments(request):
-    if request is None:
-        return Department.objects.none()
-
-    company = request.user.company
-    return company.department_set.all()
-
-class EmployeeFilter(filters.FilterSet):
-    department = filters.ModelChoiceFilter(queryset=departments)
-
-"""

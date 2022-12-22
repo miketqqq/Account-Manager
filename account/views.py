@@ -34,22 +34,22 @@ def month_selector(request, button):
 def dashboard(request):
     if not request.session.get('display_month') or not request.session.get('display_year'):
         request.session['display_month'] = today.month
-        request.session['display_year'] = 2022
+        request.session['display_year'] = today.year
 
     selected_month = request.session['display_month']
 
     banks = BankAccount.objects.filter(user=request.user)
     net_value = sum(banks.values_list('total_amount', flat=True))
 
-    income_data_set = main_type_data_set(Income, selected_month)
-    expense_data_set = main_type_data_set(Expense, selected_month)
+    income_data_set = main_type_data_set(Income, selected_month, request.user)
+    expense_data_set = main_type_data_set(Expense, selected_month, request.user)
     data_set = [income_data_set, expense_data_set]
 
-    transactions = Transaction.objects.filter(date__month=selected_month).select_related('income', 'expense')
+    transactions = Transaction.objects.filter(date__month=selected_month, user=request.user).select_related('income', 'expense')
     transactions = [transaction.income if hasattr(transaction, 'income') else transaction.expense for transaction in transactions][:6]
 
     #transaction count
-    transaction_count = income_data_set['transaction_count'] + income_data_set['transaction_count']
+    transaction_count = income_data_set['transaction_count'] + expense_data_set['transaction_count']
 
     context = {
         'banks': banks, 
@@ -83,6 +83,7 @@ def create_bank_account(request):
             new_bank_ac.save()
     return redirect('bank_detail')
 
+@login_required(login_url='/user_login')
 def update_bank_account(request, bank_id):
     #get the requested object or return none if absence.
     bank = get_object_or_none(model=BankAccount, id=bank_id, user=request.user)
@@ -119,10 +120,10 @@ def remove_bank_ac(request, bank_id):
 def transaction_detail(request):
     selected_month = request.session['display_month']
 
-    income_form = IncomeForm()
-    expense_form = ExpenseForm()
+    income_form = IncomeForm(user=request.user)
+    expense_form = ExpenseForm(user=request.user)
 
-    transactions = Transaction.objects.filter(date__month=selected_month).select_related('income', 'expense')
+    transactions = Transaction.objects.filter(date__month=selected_month, user=request.user).select_related('income', 'expense')
     transactions = [transaction.income if hasattr(transaction, 'income') else transaction.expense for transaction in transactions]
     
     context = {
@@ -135,7 +136,7 @@ def transaction_detail(request):
 def create_transaction(request, nature):
     transaction_form = IncomeForm if nature == 'income' else ExpenseForm
     if request.method == 'POST':
-        form = transaction_form(request.POST)
+        form = transaction_form(request.user, request.POST)
 
         if form.is_valid():
             new_instance = form.save(commit=False)
@@ -155,15 +156,25 @@ def transaction_handler(request, model_form, instance):
 
     #store the old amount before the form is saved
     old_amount = instance.amount
+    old_bank = instance.bank
 
     #save the form
-    form = model_form(request.POST, instance=instance)
+    form = model_form(request.user, request.POST, instance=instance)
     if form.is_valid():
         form.save()
 
-        #change the bank balance if the amount of transaction is changed
         new_amount = form.cleaned_data['amount']
-        if new_amount != old_amount:
+        new_bank = form.cleaned_data['bank']
+
+        #allocate the bank balance if the bank is changed
+        if new_bank != old_bank:
+            old_bank.alter_balance(operation='deduct', nature=instance.nature, 
+                amount=old_amount)
+            new_bank.alter_balance(operation='add', nature=instance.nature, 
+                amount=new_amount)
+
+        #change the bank balance if the amount of transaction is changed
+        elif new_amount != old_amount:
             changed_amount = new_amount - old_amount
             bank = form.cleaned_data['bank']
             bank.alter_balance(operation='add', nature=instance.nature, 
@@ -171,6 +182,7 @@ def transaction_handler(request, model_form, instance):
             
     return redirect('transaction_detail')
    
+@login_required(login_url='/user_login')
 def update_transaction(request, nature, transaction_id):
     transaction_model = Income if nature == 'income' else Expense
     transaction_form = IncomeForm if nature == 'income' else ExpenseForm
@@ -181,7 +193,7 @@ def update_transaction(request, nature, transaction_id):
     if (not transaction) or (request.user != transaction.user):
         return redirect('transaction_detail')
     
-    form = transaction_form(instance=transaction)
+    form = transaction_form(instance=transaction, user=request.user)
     if request.method == 'POST':
         return transaction_handler(request, model_form=transaction_form, instance=transaction)
 
@@ -192,7 +204,7 @@ def update_transaction(request, nature, transaction_id):
 def remove_transaction(request, nature, transaction_id):
     try:
         transaction = Transaction.objects.select_related('bank').get(id=transaction_id, user=request.user)
-    except Transaction.DoesNotExist or Transaction.MultipleObjectsReturned:
+    except Transaction.DoesNotExist:
         transaction = None
     
     #return to home if no such object or the user does not own the object
