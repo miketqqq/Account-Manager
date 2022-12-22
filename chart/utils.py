@@ -1,6 +1,5 @@
 from django.db.models import Sum
 from django.db.models.functions import TruncMonth, Round
-from django.core.exceptions import ObjectDoesNotExist
 
 from statistics import mean 
 import datetime
@@ -9,7 +8,7 @@ today = datetime.date.today()
 current_month = today.month
 
 def group_by_month(transaction_data, sub_type='nature'):
-    """group data by category."""
+    """group data by month or category."""
 
     grouped_data = transaction_data\
         .annotate(by_month=TruncMonth('date'))\
@@ -31,7 +30,6 @@ def category_data_set(main_type_model, selected_month, user):
 
     #data filtered by selected month
     main_data = main_type_model.objects.filter(date__month=selected_month, user=user).values('amount', 'category')
-
 
     #group by category
     category_current_month = main_data\

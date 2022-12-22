@@ -43,40 +43,9 @@ def main_type_data_set(main_type_model, selected_month):
     return data_set
 
 
-def displayed_month(request):
-    """get the user's selection, or use current month as default"""
-
-    return int(request.session['display_date']['month'])
-
-
 def get_object_or_none(model, id, user):
     try:
         return model.objects.get(id=id, user=user)
-    except model.DoesNotExist or model.MultipleObjectsReturned:
+    except model.DoesNotExist:
         return None
 
-
-
-
-
-""" def monthly_change(grouped_data, current_data, select_date=today): 
-    previous_month = (select_date.replace(day=1) - datetime.timedelta(days=1)).month
-
-    try:
-        previous_data = grouped_data.get(
-            by_month__month=previous_month)['sub_total']
-    except ObjectDoesNotExist:
-        previous_data = 0
-
-    change = round(current_data - previous_data, 0)
-    return change"""
-
-"""def get_month_total(grouped_data, selected_month):
-    #get sub total for a specific month.
-    
-    try:
-        current_month_total = grouped_data.get(
-            by_month__month=selected_month)['sub_total']
-    except ObjectDoesNotExist:
-        current_month_total = 0
-    return current_month_total"""

@@ -4,13 +4,13 @@ from django.contrib.auth.decorators import login_required
 # Create your views here.
 from .models import *
 from .forms import *
-from .utils import main_type_data_set, displayed_month, get_object_or_none
+from .utils import main_type_data_set, get_object_or_none
 from chart.utils import today
 
 def month_selector(request, button):
     """user selects which month of data to display"""
-    month = request.session['display_date']['month']
-    year = request.session['display_date']['year']
+    month = request.session['display_month']
+    year = request.session['display_year']
 
     if button == 'previous':
         if month > 1:
@@ -24,17 +24,19 @@ def month_selector(request, button):
         else:
             month = 1
             year += 1
-            
-    request.session['display_date'] = {'month': month, 'year': year}
+    
+    request.session['display_month'] = month
+    request.session['display_year'] = year
 
     return redirect(request.META['HTTP_REFERER'])
 
 @login_required(login_url='/user_login')
 def dashboard(request):
-    if not request.session.get('display_date'):
-        request.session['display_date'] = {'month': today.month, 'year': today.year}
+    if not request.session.get('display_month') or not request.session.get('display_year'):
+        request.session['display_month'] = today.month
+        request.session['display_year'] = 2022
 
-    selected_month = request.session['display_date']['month']
+    selected_month = request.session['display_month']
 
     banks = BankAccount.objects.filter(user=request.user)
     net_value = sum(banks.values_list('total_amount', flat=True))
@@ -99,6 +101,7 @@ def update_bank_account(request, bank_id):
     context = {'form': form}
     return render(request, 'update_bank_account.html', context)   
 
+@login_required(login_url='/user_login')
 def remove_bank_ac(request, bank_id):
     #get the requested object or return none if absence.
     bank = get_object_or_none(model=BankAccount, id=bank_id, user=request.user)
@@ -114,7 +117,7 @@ def remove_bank_ac(request, bank_id):
 """transaction related"""
 @login_required(login_url='/user_login')
 def transaction_detail(request):
-    selected_month = displayed_month(request)
+    selected_month = request.session['display_month']
 
     income_form = IncomeForm()
     expense_form = ExpenseForm()
@@ -185,13 +188,12 @@ def update_transaction(request, nature, transaction_id):
     context = {'form':form}
     return render(request, 'update_transaction.html', context)
 
+@login_required(login_url='/user_login')
 def remove_transaction(request, nature, transaction_id):
-    print('---------')
     try:
         transaction = Transaction.objects.select_related('bank').get(id=transaction_id, user=request.user)
     except Transaction.DoesNotExist or Transaction.MultipleObjectsReturned:
         transaction = None
-        
     
     #return to home if no such object or the user does not own the object
     if (not transaction) or (request.user != transaction.user):

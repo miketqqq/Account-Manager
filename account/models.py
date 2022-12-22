@@ -13,7 +13,7 @@ class BankAccount(models.Model):
     account_type = (
         ('Cash', 'Cash'), 
         ('Saving', 'Saving'),
-        ('Credit card', 'credit Card')) 
+        ('Credit card', 'Credit Card')) 
 
     bank_name = models.CharField(max_length=50)
     total_amount = models.DecimalField(max_digits=12, decimal_places=2)

@@ -2,7 +2,6 @@ from django.http import JsonResponse
 
 # Create your views here.
 from account.models import * 
-from account.utils import displayed_month
 from .utils import category_data_set, group_by_month
 from statistics import mean 
 from dateutil.relativedelta import relativedelta
@@ -69,7 +68,7 @@ def bank_account_chart(request):
 
 def category_chart(request):
     """group category by month for bar chart"""
-    selected_month = displayed_month(request)
+    selected_month = request.session['display_month']
 
     income_category_data = category_data_set(Income, selected_month, user=request.user)
     expense_category_data = category_data_set(Expense, selected_month, user=request.user)
