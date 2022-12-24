@@ -4,6 +4,7 @@ from django.core.validators import MinValueValidator
 from decimal import Decimal
 
 # Create your models here.
+import uuid
 
 class BankAccount(models.Model):
     account_type = (
@@ -12,6 +13,7 @@ class BankAccount(models.Model):
         ('Investment', 'Investment'),
         ('Credit card', 'Credit Card')) 
 
+    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     bank_name = models.CharField(max_length=50)
     total_amount = models.DecimalField(max_digits=12, decimal_places=2)
     account_type = models.CharField(max_length=100, choices = account_type, default='Cash')
@@ -41,6 +43,7 @@ class BankAccount(models.Model):
 
 
 class Transaction(models.Model):
+    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     detail = models.CharField(max_length=100)
     amount = models.DecimalField(
         max_digits=12, 
@@ -57,6 +60,7 @@ class Transaction(models.Model):
         ordering = ['-date']
     #    abstract = True
 
+
 class Expense(Transaction):
     expense_category = [
         ('Food', 'Food'),
@@ -71,7 +75,6 @@ class Expense(Transaction):
     nature = models.CharField(default='expense', editable=False, max_length=10)
     category = models.CharField(max_length=40, choices=expense_category)
 
-
     def __repr__(self):
         return f"Expense(detail={self.detail}, {self.amount}, {self.category}, {self.date})"
 
@@ -80,6 +83,7 @@ class Expense(Transaction):
     
     class Meta:
         ordering = ['-date']
+
 
 class Income(Transaction):
     income_category = [
@@ -100,21 +104,4 @@ class Income(Transaction):
         
     class Meta:
         ordering = ['-date']
-
-class CustomExpense(Transaction):
-    custom_expense_category = [('a','a')]
-    custom_category = models.CharField(max_length=40)
-    is_income = models.CharField(default='expense', editable=False, max_length=10)
-
-
-    def __str__(self):
-        return self.custom_category
-
-class CustomIncome(Transaction):
-    custom_category = models.CharField(max_length=40)
-    is_income = models.CharField(default='income', editable=False, max_length=10)
-
-
-    def __str__(self):
-        return self.custom_category
 

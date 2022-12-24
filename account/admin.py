@@ -5,5 +5,3 @@ from .models import *
 admin.site.register(BankAccount)
 admin.site.register(Expense)
 admin.site.register(Income)
-admin.site.register(CustomExpense)
-admin.site.register(CustomIncome)
