@@ -21,22 +21,21 @@ function income_expense_chart(ctx1) {
                     data: chart_data.expense_data,
                     backgroundColor: red,
                     borderColor: white,
-                },
-
-                ],
+                }]
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,  //displaying the graph dynamically among different devices.
                 elements:{
                     point:{
-                        radius:6
+                        radius:5
                     }
                 },
                 scales: {
                     y: {  
                         ticks: {
                             color: "white", 
-                            beginAtZero: true
+                            //beginAtZero: true
                         },
                         grid: {
                             color: grid_color
@@ -45,7 +44,7 @@ function income_expense_chart(ctx1) {
                     x: {  
                         ticks: {
                             color: "white",
-                            beginAtZero: true
+                            //beginAtZero: true
                         },
                         grid: {
                             color: grid_color
@@ -81,29 +80,28 @@ function bank_account_chart(ctx2) {
     fetch(ctx2.dataset.url)
     .then((response) => response.json())
     .then((chart_data) => {
-            new Chart(ctx2, {
-                type: "pie",
-                data: {
-                    labels: chart_data.label,
-                    datasets: [{
-                            label: "Balance",
-                            data: chart_data.balance,
-
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'right',
-                            labels: {
-                                color: "white",
-                            }
+        new Chart(ctx2, {
+            type: "pie",
+            data: {
+                labels: chart_data.label,
+                datasets: [{
+                    label: "Balance",
+                    data: chart_data.balance,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,  //displaying the graph dynamically among different devices.
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            color: "white",
                         }
-                    },
-                }
-            });
+                    }
+                },
+            }
+        });
     })
 };
 
@@ -134,13 +132,11 @@ function income_category_chart(ctx3, ctx4) {
                     y: {
                         ticks: {
                             color: "white", 
-                            beginAtZero: true
                         }
                     },
                     x: {
                         ticks: {
                             color: "white", 
-                            beginAtZero: true
                         }
                     }
                 }
@@ -167,13 +163,11 @@ function income_category_chart(ctx3, ctx4) {
                     y: {
                         ticks: {
                             color: "white", 
-                            beginAtZero: true
                         }
                     },
                     x: {
                         ticks: {
                             color: "white", 
-                            beginAtZero: true
                         }
                     }
                 }

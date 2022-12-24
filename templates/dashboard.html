@@ -62,7 +62,7 @@
                     <a href="{% url 'transaction_detail' %}">Show All</a>
                 </div>
                 <div class="dashboard-chart-container">
-                    <canvas id="income-expense" data-url="{% url 'income_expense_chart' %}" width="980" height="430"></canvas>
+                    <canvas id="income-expense" data-url="{% url 'income_expense_chart' %}"></canvas>
                 </div>
             </div>
         </div>
@@ -87,16 +87,16 @@
     <div class="bg-secondary text-center rounded p-4">
         <div class="d-flex align-items-center justify-content-between mb-4">
             <h6 class="mb-0">Recent transactions</h6>
-            Filter
             <div>
                 <a href="{% url 'transaction_detail'%}">Detail</a>
             </div>
         </div>
         <div class="table-responsive">
-            <table class="table text-start align-middle table-hover mb-0">
+            <table class="table table-sm text-start align-middle table-hover mb-0">
                 <thead>
                     <tr class="text-white">
                         <th scope="col">Date</th>
+                        <th scope="col">Nature</th>
                         <th scope="col">Category</th>
                         <th scope="col">Detail</th>
                         <th scope="col">Amount</th>
@@ -105,10 +105,11 @@
                 <tbody>
                     {% for transaction in transactions %}
                     <tr class="{{transaction.nature}}-item">
-                        <td>{{transaction.date}}</td>
+                        <td class="transaction-amount">{{transaction.date}}</td>
+                        <td class="transaction-amount">{{transaction.nature|title}}</td>
                         <td>{{transaction.category}}</td>
                         <td>{{transaction.detail}}</td>
-                        <td>${{transaction.amount}}</td>
+                        <td class="transaction-amount">${{transaction.amount}}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -121,15 +122,14 @@
 
 <!-- Footer Start -->
 <div class="container-fluid pt-4 px-4">
-    <div class="bg-secondary rounded-top p-4">
+    <div class="bg-secondary rounded-top p-2">
         <div class="row">
             <div class="col-12 col-sm-6 text-center text-sm-start">
-                &copy; <a href="#">Your Site Name</a>, All Right Reserved. 
+                &copy; <a href="#">Account Manager</a>, All Right Reserved. 
             </div>
             <div class="col-12 col-sm-6 text-center text-sm-end">
                 <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
-                Designed By <a href="https://htmlcodex.com">HTML Codex</a>
-            </br>
+                Designed By <a href="https://htmlcodex.com" target="_blank">HTML Codex</a>
             Distributed By <a class="border-bottom" href="https://themewagon.com" target="_blank">ThemeWagon</a>
             </div>
         </div>

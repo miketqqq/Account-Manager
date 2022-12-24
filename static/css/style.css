@@ -298,7 +298,7 @@
     color: hsl(120, 100%, 25%);
 }
 .expense-sub-total, .expense-average{
-    color: red;
+    color: hsl(0, 100%, 50%);
 }
 
 .monthly-change {
@@ -307,8 +307,6 @@
 
 .dashboard-chart-container {
     height: 225px;
-    margin: 0 auto; 
-    display: inline-block;
 }
 
 .expense-item .transaction-amount {
