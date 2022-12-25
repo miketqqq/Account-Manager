@@ -36,7 +36,7 @@ def user_logout(request):
     return redirect("dashboard")
 
 def demo_login(request):
-    
+    #to login as a demo user
     user = authenticate(request, username='demo_user', password='Demo_User_Password')
     login(request, user)
 

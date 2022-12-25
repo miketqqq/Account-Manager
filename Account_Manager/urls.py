@@ -17,7 +17,9 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    #path('admin/', include('admin_honeypot.urls', namespace='admin_honeypot')),
+    path('alpha/', admin.site.urls),
+    
     path('', include('account.urls')),
     path('', include('register.urls')),
     path('chart/', include('chart.urls')),
