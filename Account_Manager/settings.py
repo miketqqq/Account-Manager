@@ -31,7 +31,7 @@ DEBUG = False
 ALLOWED_HOSTS = ['account-manager-production.up.railway.app', '127.0.0.1']
 
 if not DEBUG:
-    CSRF_TRUSTED_ORIGINS = ['https://account-manager-production.up.railway.app/']
+    CSRF_TRUSTED_ORIGINS = ['https://account-manager-production.up.railway.app']
 
 # Application definition
 
