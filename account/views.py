@@ -220,23 +220,3 @@ def remove_transaction(request, nature, transaction_id):
     return redirect('transaction_detail')
 
 
-"""useless"""
-def category_detail(request, category):
-    transactions = Transaction.objects.filter(category=category)
-    sub_total = sum(transactions.values_list('amount', flat=True))
-
-    context = {'transactions': transactions, 'sub_total': sub_total}
-    return render(request, 'detail_page.html', context)
-
-def main_type_detail(request, nature):
-    if nature =='income':
-        tran_model = Income
-    else:
-        tran_model = Expense
-
-    transactions = tran_model.objects.all()
-    sub_total = sum(transactions.values_list('amount', flat=True))
-
-    context = {'transactions': transactions, 'sub_total': sub_total}
-    return render(request, 'detail_page.html', context)
-
