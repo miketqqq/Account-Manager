@@ -30,6 +30,8 @@ DEBUG = False
 
 ALLOWED_HOSTS = ['account-manager-production.up.railway.app', '127.0.0.1']
 
+if not DEBUG:
+    CSRF_TRUSTED_ORIGINS = ['https://account-manager-production.up.railway.app/']
 
 # Application definition
 
@@ -46,7 +48,6 @@ INSTALLED_APPS = [
     'register',
 
     'crispy_forms',
-    'storages',
 ]
 
 MIDDLEWARE = [
@@ -140,11 +141,3 @@ MEDIA_URL = '/img/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
-
-#S3 bucket config
-#aws_access_key_id = YOUR_ACCESS_KEY
-#aws_secret_access_key = YOUR_SECRET_KEY
-#AWS_STORAGE_BUCKET_NAME = 
-
-#DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-#STATICFILES_STORAGE = 'storages.backends.s3boto3.S3StaticStorage'
