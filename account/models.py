@@ -43,7 +43,7 @@ class BankAccount(models.Model):
 
 
 class Transaction(models.Model):
-    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     detail = models.CharField(max_length=100)
     amount = models.DecimalField(
         max_digits=12, 
