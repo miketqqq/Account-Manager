@@ -1,6 +1,4 @@
 from .models import *
-from chart.utils import current_month
-
 
 def main_type_data_set(main_type_model, selected_month, user):
     """Return a set of data for income and expense models seperately"""
@@ -41,6 +39,17 @@ def main_type_data_set(main_type_model, selected_month, user):
         'monthly_change': monthly_change,
     }
     return data_set
+
+
+def manual_adjustment(model, date, bank, user):
+    adjustment, _ = model.objects.get_or_create(
+        detail = 'Manual adjustment',
+        date = date,
+        bank = bank,
+        user = user,
+        category = 'Manual adjustment'
+    )
+    return adjustment
 
 
 def get_object_or_none(model, id, user):

@@ -4,8 +4,8 @@ from django.contrib.auth.decorators import login_required
 # Create your views here.
 from .models import *
 from .forms import *
-from .utils import main_type_data_set, get_object_or_none
-from chart.utils import today
+from account import utils
+import chart.utils as chart_utils
 
 def month_selector(request, button):
     """user selects which month of data to display"""
@@ -24,6 +24,8 @@ def month_selector(request, button):
         else:
             month = 1
             year += 1
+    else:
+        month, year = button.split(" ")
     
     request.session['display_month'] = month
     request.session['display_year'] = year
@@ -33,16 +35,16 @@ def month_selector(request, button):
 @login_required(login_url='/user_login')
 def dashboard(request):
     if not request.session.get('display_month') or not request.session.get('display_year'):
-        request.session['display_month'] = today.month
-        request.session['display_year'] = today.year
+        request.session['display_month'] = chart_utils.today.month
+        request.session['display_year'] = chart_utils.today.year
 
     selected_month = request.session['display_month']
 
     banks = BankAccount.objects.filter(user=request.user)
     net_value = sum(banks.values_list('total_amount', flat=True))
 
-    income_data_set = main_type_data_set(Income, selected_month, request.user)
-    expense_data_set = main_type_data_set(Expense, selected_month, request.user)
+    income_data_set = utils.main_type_data_set(Income, selected_month, request.user)
+    expense_data_set = utils.main_type_data_set(Expense, selected_month, request.user)
     data_set = [income_data_set, expense_data_set]
 
     transactions = Transaction.objects.filter(date__month=selected_month, user=request.user).select_related('income', 'expense')
@@ -86,7 +88,7 @@ def create_bank_account(request):
 @login_required(login_url='/user_login')
 def update_bank_account(request, bank_id):
     #get the requested object or return none if absence.
-    bank = get_object_or_none(model=BankAccount, id=bank_id, user=request.user)
+    bank = utils.get_object_or_none(model=BankAccount, id=bank_id, user=request.user)
 
     #return to home if no such object or the user does not own the object
     if (not bank) or (request.user != bank.user):
@@ -94,9 +96,40 @@ def update_bank_account(request, bank_id):
 
     form = BankAccountForm(instance=bank)
     if request.method == 'POST':
+        #store the old amount before the form is saved
+        old_amount = bank.total_amount
+
+        #save the form
         form = BankAccountForm(request.POST, instance=bank)
         if form.is_valid():
             form.save()
+
+            #create a transaction named as 'Manual adjustment' 
+            #if bank balance is changed
+            new_amount = form.cleaned_data['total_amount']
+            if new_amount > old_amount:
+                income_adjustment = utils.manual_adjustment(
+                    model = Income,
+                    date = chart_utils.today,
+                    bank = bank,
+                    user = request.user,
+                )
+
+                income_adjustment.amount += (new_amount - old_amount)
+                income_adjustment.save()
+
+            elif new_amount < old_amount:
+                expense_adjustment = utils.manual_adjustment(
+                    model = Expense,
+                    date = chart_utils.today,
+                    bank = bank,
+                    user = request.user,
+                )
+
+                expense_adjustment.amount += (old_amount - new_amount)
+                expense_adjustment.save()
+
+
         return redirect('bank_detail')
 
     context = {'form': form}
@@ -105,7 +138,7 @@ def update_bank_account(request, bank_id):
 @login_required(login_url='/user_login')
 def remove_bank_ac(request, bank_id):
     #get the requested object or return none if absence.
-    bank = get_object_or_none(model=BankAccount, id=bank_id, user=request.user)
+    bank = utils.get_object_or_none(model=BankAccount, id=bank_id, user=request.user)
 
     #return to home if no such object or the user does not own the object
     if (not bank) or (request.user != bank.user):
@@ -187,7 +220,7 @@ def update_transaction(request, nature, transaction_id):
     transaction_model = Income if nature == 'income' else Expense
     transaction_form = IncomeForm if nature == 'income' else ExpenseForm
 
-    transaction = get_object_or_none(model=transaction_model, id=transaction_id, user=request.user)
+    transaction = utils.get_object_or_none(model=transaction_model, id=transaction_id, user=request.user)
 
     #return to home if no such object or the user does not own the object
     if (not transaction) or (request.user != transaction.user):
