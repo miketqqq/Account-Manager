@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
+from django.utils import timezone
 from decimal import Decimal
 
 # Create your models here.
@@ -15,7 +16,7 @@ class BankAccount(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     bank_name = models.CharField(max_length=50)
-    total_amount = models.DecimalField(max_digits=12, decimal_places=2)
+    balance = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     account_type = models.CharField(max_length=100, choices = account_type, default='Cash')
     date = models.DateField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -23,15 +24,15 @@ class BankAccount(models.Model):
     def alter_balance(self, operation, nature, amount):
         if nature == 'income' and operation == 'add' or \
             nature == 'expense' and operation == 'deduct':
-            self.total_amount += amount
+            self.balance += amount
         else:
-            self.total_amount -= amount
+            self.balance -= amount
         self.save()
 
     def __repr__(self):
         return f"Bank_account(\
             bank_name={self.bank_name},\
-            total_amount={self.total_amount},\
+            balance={self.balance},\
             date={self.date},\
             user={self.user})"
 
@@ -46,10 +47,11 @@ class Transaction(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     detail = models.CharField(max_length=100)
     amount = models.DecimalField(
+        default=0,
         max_digits=12, 
         decimal_places=2,
         validators=[MinValueValidator(Decimal('0.01'))])
-    date = models.DateField()
+    date = models.DateField(default=timezone.now)
     bank = models.ForeignKey(BankAccount, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
         
@@ -69,7 +71,7 @@ class Expense(Transaction):
         ('Bill', 'Bill'),
         ('Entertainment', 'Entertainment'),
         ('Shopping', 'Shopping'),
-        ('Internal Transfer', 'Internal Transfer'),
+        ('Manual adjustment', 'Manual adjustment'),
         ('Other', 'Other'),
     ]
     nature = models.CharField(default='expense', editable=False, max_length=10)
@@ -90,7 +92,7 @@ class Income(Transaction):
         ('Salary', 'Salary'),
         ('Investment', 'Investment'),
         ('Online Shop', 'Online Shop'),
-        ('Internal Transfer', 'Internal Transfer'),
+        ('Manual adjustment', 'Manual adjustment'),
         ('Other', 'Other'),
     ]
     nature = models.CharField(default='income', editable=False, max_length=10)

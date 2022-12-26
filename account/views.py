@@ -41,7 +41,7 @@ def dashboard(request):
     selected_month = request.session['display_month']
 
     banks = BankAccount.objects.filter(user=request.user)
-    net_value = sum(banks.values_list('total_amount', flat=True))
+    net_value = sum(banks.values_list('balance', flat=True))
 
     income_data_set = utils.main_type_data_set(Income, selected_month, request.user)
     expense_data_set = utils.main_type_data_set(Expense, selected_month, request.user)
@@ -54,7 +54,6 @@ def dashboard(request):
     transaction_count = income_data_set['transaction_count'] + expense_data_set['transaction_count']
 
     context = {
-        'banks': banks, 
         'net_value': net_value,
         'data_set': data_set,
         'transactions': transactions, 
@@ -97,7 +96,7 @@ def update_bank_account(request, bank_id):
     form = BankAccountForm(instance=bank)
     if request.method == 'POST':
         #store the old amount before the form is saved
-        old_amount = bank.total_amount
+        old_amount = bank.balance
 
         #save the form
         form = BankAccountForm(request.POST, instance=bank)
@@ -106,7 +105,7 @@ def update_bank_account(request, bank_id):
 
             #create a transaction named as 'Manual adjustment' 
             #if bank balance is changed
-            new_amount = form.cleaned_data['total_amount']
+            new_amount = form.cleaned_data['balance']
             if new_amount > old_amount:
                 income_adjustment = utils.manual_adjustment(
                     model = Income,

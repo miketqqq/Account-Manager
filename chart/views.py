@@ -63,14 +63,14 @@ def income_expense_chart(request):
 
 def bank_account_chart(request):
     """data for pie chart"""
-    banks = BankAccount.objects.filter(user=request.user).values('bank_name', 'total_amount')
+    banks = BankAccount.objects.filter(user=request.user).values('bank_name', 'balance')
 
     if not banks:
         label = ['Example']
         balance = [10]
     else:
         label = list(banks.values_list('bank_name', flat=True))
-        balance = list(banks.values_list('total_amount', flat=True))
+        balance = list(banks.values_list('balance', flat=True))
 
     context = {
         'label': label,

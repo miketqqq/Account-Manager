@@ -6,17 +6,17 @@
 <div class="container-fluid pt-4 px-4">
     <div class="bg-secondary text-center rounded p-4">
         <div class="d-flex align-items-center justify-content-between mb-4">
-            <h6 class="mb-0">Bank Account</h6>
+            <h6 class="mb-0">Account</h6>
             <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#bank-account-Modal">
-                Add a bank account</button>
+                Add an account</button>
         </div>
         <div class="table-responsive">
             <table class="table text-start align-middle table-hover mb-0">
                 <thead>
                     <tr class="text-white">
-                        <th scope="col">Bank</th>
+                        <th scope="col">Name</th>
                         <th scope="col">Account Type</th>
-                        <th scope="col">Current Balance</th>
+                        <th scope="col">Balance</th>
                         <th colspan='2'></th>
                     </tr>
                 </thead>
@@ -25,7 +25,7 @@
                     <tr>
                         <td>{{bank.bank_name}}</td>
                         <td>{{bank.account_type}}</td>
-                        <td>${{bank.total_amount}}</td>
+                        <td>${{bank.balance}}</td>
                         <td><a href="{% url 'update_bank_account' bank.id %}">Edit</a></td>
                         <td><a data-url="{% url 'remove_bank_ac' bank.id %}" 
                             class="remove-bank-account" type="button" data-bs-toggle="modal" data-bs-target="#remove-account-Modal">
@@ -46,7 +46,7 @@
         <div class="col-sm-12 col-xl-6 align-self-center">
             <div class="bg-secondary text-center rounded p-4">
                 <div class="d-flex align-items-center justify-content-between mb-4">
-                    <h6 class="mb-0">Bank Account</h6>
+                    <h6 class="mb-0">Account</h6>
                 </div>
                 <div class="chart-container">
                     <canvas id="bank-accounts" data-url="{% url 'bank_account_chart' %}"></canvas>
@@ -63,7 +63,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="bank-account-ModalLabel">Create a new income</h5>
+          <h5 class="modal-title" id="bank-account-ModalLabel">Create a new account</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -89,12 +89,12 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="remove-account-ModalLabel">Delete Bank Account</h5>
+          <h5 class="modal-title" id="remove-account-ModalLabel">Delete Account</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
             <div class="d-flex align-items-center justify-content-between">
-                <p>Are you sure you want to delete this bank account?</p>
+                <p>Are you sure you want to delete this account?</p>
             </div>
         </div>
         <div class="modal-footer">
