@@ -38,16 +38,22 @@ def dashboard(request):
         request.session['display_month'] = chart_utils.today.month
         request.session['display_year'] = chart_utils.today.year
 
-    selected_month = request.session['display_month']
-
     banks = BankAccount.objects.filter(user=request.user)
     net_value = sum(banks.values_list('balance', flat=True))
 
-    income_data_set = utils.main_type_data_set(Income, selected_month, request.user)
-    expense_data_set = utils.main_type_data_set(Expense, selected_month, request.user)
+    selected_month = request.session['display_month']
+    selected_year = request.session['display_year']
+
+    income_data_set = utils.main_type_data_set(Income, selected_month, selected_year, request.user)
+    expense_data_set = utils.main_type_data_set(Expense, selected_month, selected_year, request.user)
     data_set = [income_data_set, expense_data_set]
 
-    transactions = Transaction.objects.filter(date__month=selected_month, user=request.user).select_related('income', 'expense')
+    transactions = Transaction.objects.filter(
+        date__month=selected_month,
+        date__year=selected_year,
+        user=request.user
+    ).select_related('income', 'expense')
+
     transactions = [transaction.income if hasattr(transaction, 'income') else transaction.expense for transaction in transactions][:6]
 
     #transaction count
@@ -151,17 +157,23 @@ def remove_bank_ac(request, bank_id):
 @login_required(login_url='/user_login')
 def transaction_detail(request):
     selected_month = request.session['display_month']
+    selected_year = request.session['display_year']
 
     income_form = IncomeForm(user=request.user)
     expense_form = ExpenseForm(user=request.user)
 
-    transactions = Transaction.objects.filter(date__month=selected_month, user=request.user).select_related('income', 'expense')
+    transactions = Transaction.objects.filter(
+        date__month=selected_month,
+        date__year=selected_year,
+        user=request.user
+    ).select_related('income', 'expense', 'bank')  #bank name will be used in front-end.
+
     transactions = [transaction.income if hasattr(transaction, 'income') else transaction.expense for transaction in transactions]
     
     context = {
         'transactions': transactions,
-        'income_form':income_form,
-        'expense_form':expense_form,
+        'income_form': income_form,
+        'expense_form': expense_form,
     }
     return render(request, 'transaction_detail.html', context)
 
@@ -175,7 +187,7 @@ def create_transaction(request, nature):
             new_instance.user = request.user
             new_instance.save()
 
-            #change the bank balance, send signal to bank_ac model?
+            #change the bank balance
             changed_amount = form.cleaned_data['amount']
             bank = form.cleaned_data['bank']
             bank.alter_balance(operation='add', nature=nature, 

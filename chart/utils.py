@@ -7,6 +7,13 @@ import datetime
 today = datetime.date.today()
 current_month = today.month
 
+def last_day_of_month(any_day):
+    # 31 days later, it's always next month
+    next_month = any_day + datetime.timedelta(days=31)
+    # subtracting the number of the current day brings us back one month
+    return next_month - datetime.timedelta(days=next_month.day)
+
+
 def group_by_month(transaction_data, sub_type='nature'):
     """group data by month or category."""
 
@@ -25,11 +32,15 @@ def monthly_average(grouped_data):
     return round(mean(avg), 0)
 
 
-def category_data_set(main_type_model, selected_month, user):
+def category_data_set(main_type_model, selected_month, selected_year, user):
     """Return a set of data grouped by category for income/expense seperately"""
 
     #data filtered by selected month
-    main_data = main_type_model.objects.filter(date__month=selected_month, user=user).values('amount', 'category')
+    main_data = main_type_model.objects.filter(
+        date__month=selected_month,
+        date__year=selected_year,
+        user=user
+    ).values('amount', 'category')
 
     #group by category
     category_current_month = main_data\

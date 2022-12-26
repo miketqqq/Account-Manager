@@ -53,6 +53,7 @@
                         <th scope="col">Category</th>
                         <th scope="col">Detail</th>
                         <th scope="col">Amount</th>
+                        <th scope="col">Bank</th>
                         <th colspan='2'></th>
                     </tr>
                 </thead>
@@ -63,6 +64,7 @@
                         <td class="transaction-amount">{{transaction.nature|title}}</td>
                         <td>{{transaction.category}}</td>
                         <td>{{transaction.detail}}</td>
+                        <td>{{transaction.bank}}</td>
                         <td class="transaction-amount">${{transaction.amount}}</td>
                         <td><a href="{% url 'update_transaction' transaction.nature transaction.id %}">Edit</a></td>
                         <td><a data-url="{% url 'remove_transaction' 'transaction.nature' transaction.id %}" 

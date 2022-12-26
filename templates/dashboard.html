@@ -82,7 +82,7 @@
 <!-- Chart End -->
 
 
-<!-- Transactions Start -->
+<!-- Transactions Table Start -->
 <div class="container-fluid pt-4 px-4">
     <div class="bg-secondary text-center rounded p-4">
         <div class="d-flex align-items-center justify-content-between mb-4">
@@ -99,6 +99,7 @@
                         <th scope="col">Nature</th>
                         <th scope="col">Category</th>
                         <th scope="col">Detail</th>
+                        <th scope="col">Bank</th>
                         <th scope="col">Amount</th>
                     </tr>
                 </thead>
@@ -109,6 +110,7 @@
                         <td class="transaction-amount">{{transaction.nature|title}}</td>
                         <td>{{transaction.category}}</td>
                         <td>{{transaction.detail}}</td>
+                        <td>{{transaction.bank}}</td>
                         <td class="transaction-amount">${{transaction.amount}}</td>
                     </tr>
                     {% endfor %}
@@ -117,7 +119,7 @@
         </div>
     </div>
 </div>
-<!-- Transactions End -->
+<!-- Transactions Table End -->
 
 
 <!-- Footer Start -->
