@@ -34,7 +34,7 @@ function income_expense_chart(ctx1) {
                 scales: {
                     y: {  
                         ticks: {
-                            color: white, 
+                            color: "white", 
                             //beginAtZero: true
                         },
                         grid: {
@@ -43,7 +43,7 @@ function income_expense_chart(ctx1) {
                     },
                     x: {  
                         ticks: {
-                            color: white,
+                            color: "white",
                             //beginAtZero: true
                         },
                         grid: {
@@ -54,7 +54,7 @@ function income_expense_chart(ctx1) {
                 plugins:{
                     legend: {
                         labels: {
-                            color: white,
+                            color: "white",
                         }
                     },
                 },
@@ -80,16 +80,13 @@ function bank_account_chart(ctx2) {
     fetch(ctx2.dataset.url)
     .then((response) => response.json())
     .then((chart_data) => {
-        const colours = chart_data.balance.map((value) => value < 0 ? red : green);
         new Chart(ctx2, {
             type: "bar",
             data: {
                 labels: chart_data.label,
                 datasets: [{
                     axis: 'y',
-                    data: chart_data.balance,
-                    borderColor: colours,
-                    backgroundColor: colours,
+                    data: chart_data.balance
                 }]
             },
             options: {
@@ -104,11 +101,7 @@ function bank_account_chart(ctx2) {
                 scales: {
                     y: {
                         ticks: {
-                            minRotation : 25,
                             color: white, 
-                            font: {
-                                size: 10
-                            }
                         }
                     },
                     x: {
@@ -128,7 +121,7 @@ function income_category_chart(ctx3, ctx4) {
     .then((response) => response.json())
     .then((chart_data) => {
         new Chart(ctx3, {
-            type: "doughnut",
+            type: "pie",
             data: {
                 labels: chart_data.income_label,
                 datasets: [{
@@ -151,7 +144,7 @@ function income_category_chart(ctx3, ctx4) {
             },
         });
         new Chart(ctx4, {
-            type: "doughnut",
+            type: "pie",
             data: {
                 labels: chart_data.expense_label,
                 datasets: [{
@@ -206,6 +199,7 @@ function set_sidebar_active_item(){
         }
     }
 }
+
 set_sidebar_active_item()
 
 

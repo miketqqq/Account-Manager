@@ -34,7 +34,7 @@ function income_expense_chart(ctx1) {
                 scales: {
                     y: {  
                         ticks: {
-                            color: "white", 
+                            color: white, 
                             //beginAtZero: true
                         },
                         grid: {
@@ -43,7 +43,7 @@ function income_expense_chart(ctx1) {
                     },
                     x: {  
                         ticks: {
-                            color: "white",
+                            color: white,
                             //beginAtZero: true
                         },
                         grid: {
@@ -54,7 +54,7 @@ function income_expense_chart(ctx1) {
                 plugins:{
                     legend: {
                         labels: {
-                            color: "white",
+                            color: white,
                         }
                     },
                 },
@@ -80,13 +80,16 @@ function bank_account_chart(ctx2) {
     fetch(ctx2.dataset.url)
     .then((response) => response.json())
     .then((chart_data) => {
+        const colours = chart_data.balance.map((value) => value < 0 ? red : green);
         new Chart(ctx2, {
-            type: "pie",
+            type: "bar",
             data: {
                 labels: chart_data.label,
                 datasets: [{
-                    label: "Balance",
+                    axis: 'y',
                     data: chart_data.balance,
+                    borderColor: colours,
+                    backgroundColor: colours,
                 }]
             },
             options: {
@@ -94,12 +97,26 @@ function bank_account_chart(ctx2) {
                 maintainAspectRatio: false,  //displaying the graph dynamically among different devices.
                 plugins: {
                     legend: {
-                        position: 'right',
-                        labels: {
-                            color: "white",
-                        }
+                        display: false
                     }
                 },
+                indexAxis: 'y',
+                scales: {
+                    y: {
+                        ticks: {
+                            minRotation : 25,
+                            color: white, 
+                            font: {
+                                size: 10
+                            }
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            color: white, 
+                        }
+                    }
+                }
             }
         });
     })
@@ -111,66 +128,49 @@ function income_category_chart(ctx3, ctx4) {
     .then((response) => response.json())
     .then((chart_data) => {
         new Chart(ctx3, {
-            type: "bar",
+            type: "doughnut",
             data: {
                 labels: chart_data.income_label,
                 datasets: [{
-                    axis: 'y',
+                    label: 'Amount',
                     data: chart_data.income_amount,
-                    backgroundColor: green,
-
+                    //backgroundColor: green,
                 }]
             },
             options: {
+                responsive: true,
+                maintainAspectRatio: false,  //displaying the graph dynamically among different devices.
                 plugins:{
                     legend:{
-                        display: false
+                        position: 'right',
+                        labels: {
+                            color: white,
+                        }
                     },
                 },
-                indexAxis: 'y',
-                scales: {
-                    y: {
-                        ticks: {
-                            color: "white", 
-                        }
-                    },
-                    x: {
-                        ticks: {
-                            color: "white", 
-                        }
-                    }
-                }
             },
         });
         new Chart(ctx4, {
-            type: "bar",
+            type: "doughnut",
             data: {
                 labels: chart_data.expense_label,
                 datasets: [{
-                    axis: 'y',
+                    label: 'Amount',
                     data: chart_data.expense_amount,
-                    backgroundColor: red,
+                    //backgroundColor: red,
                 }]
             },
             options: {
+                responsive: true,
+                maintainAspectRatio: false,  //displaying the graph dynamically among different devices.
                 plugins:{
                     legend:{
-                        display: false
+                        position: 'right',
+                        labels: {
+                            color: white,
+                        }
                     },
                 },
-                indexAxis: 'y',
-                scales: {
-                    y: {
-                        ticks: {
-                            color: "white", 
-                        }
-                    },
-                    x: {
-                        ticks: {
-                            color: "white", 
-                        }
-                    }
-                }
             },
         });
     })
@@ -206,7 +206,6 @@ function set_sidebar_active_item(){
         }
     }
 }
-
 set_sidebar_active_item()
 
 
