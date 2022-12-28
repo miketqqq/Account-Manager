@@ -27,12 +27,13 @@ def income_expense_chart(request):
         Q(date__lte=last_day),
         Q(date__gte=month_label),
         user=request.user
-    )
+    ).exclude(category='Manual adjustment')
+    
     expense = Expense.objects.filter(
         Q(date__lte=last_day),
         Q(date__gte=month_label),
         user=request.user
-    )
+    ).exclude(category='Manual adjustment')
 
     income_by_month_data = chart_utils.group_by_month(income)
     expense_by_month_data = chart_utils.group_by_month(expense)

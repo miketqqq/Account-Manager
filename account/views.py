@@ -2,13 +2,44 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 
 # Create your views here.
-from .models import *
-from .forms import *
+from .models import BankAccount, Transaction, Expense, Income
+from .forms import BankAccountForm, IncomeForm, ExpenseForm
 from account import utils
 import chart.utils as chart_utils
 
+
+@login_required(login_url='/user_login')
+def dashboard(request):
+    if not request.session.get('display_month') or not request.session.get('display_year'):
+        request.session['display_month'] = chart_utils.today.month
+        request.session['display_year'] = chart_utils.today.year
+
+    selected_month = request.session['display_month']
+    selected_year = request.session['display_year']
+    
+    #Summary statistics section
+    summary_statistics = utils.summary_statistics_data(selected_month, selected_year, request.user)
+
+    #Recent Transactions section
+    transactions = Transaction.objects.filter(
+        date__month=selected_month,
+        date__year=selected_year,
+        user=request.user
+    ).select_related('income', 'expense', 'bank')
+    
+    transactions = [
+        transaction.income if hasattr(transaction, 'income') else transaction.expense for transaction in transactions
+    ][:6]
+
+    context = {
+        'transactions': transactions, 
+        **summary_statistics,
+    }
+
+    return render(request, 'dashboard.html', context)
+
 def month_selector(request, button):
-    """user selects which month of data to display"""
+    """user selects which month of data to display."""
     month = request.session['display_month']
     year = request.session['display_year']
 
@@ -32,41 +63,6 @@ def month_selector(request, button):
 
     return redirect(request.META['HTTP_REFERER'])
 
-@login_required(login_url='/user_login')
-def dashboard(request):
-    if not request.session.get('display_month') or not request.session.get('display_year'):
-        request.session['display_month'] = chart_utils.today.month
-        request.session['display_year'] = chart_utils.today.year
-
-    banks = BankAccount.objects.filter(user=request.user)
-    net_value = sum(banks.values_list('balance', flat=True))
-
-    selected_month = request.session['display_month']
-    selected_year = request.session['display_year']
-
-    income_data_set = utils.main_type_data_set(Income, selected_month, selected_year, request.user)
-    expense_data_set = utils.main_type_data_set(Expense, selected_month, selected_year, request.user)
-    data_set = [income_data_set, expense_data_set]
-
-    transactions = Transaction.objects.filter(
-        date__month=selected_month,
-        date__year=selected_year,
-        user=request.user
-    ).select_related('income', 'expense')
-
-    transactions = [transaction.income if hasattr(transaction, 'income') else transaction.expense for transaction in transactions][:6]
-
-    #transaction count
-    transaction_count = income_data_set['transaction_count'] + expense_data_set['transaction_count']
-
-    context = {
-        'net_value': net_value,
-        'data_set': data_set,
-        'transactions': transactions, 
-        'transaction_count': transaction_count,
-    }
-
-    return render(request, 'dashboard.html', context)
 
 
 """bank account related"""
@@ -75,9 +71,16 @@ def bank_detail(request):
     form = BankAccountForm()
     banks = BankAccount.objects.filter(user=request.user)
 
+    selected_month = request.session['display_month']
+    selected_year = request.session['display_year']
+    
+    #Summary statistics section
+    summary_statistics = utils.summary_statistics_data(selected_month, selected_year, request.user)
+
     context = {
         'banks': banks,
         'form': form,
+        **summary_statistics
     }
     return render(request, 'bank_detail.html', context)
 
@@ -99,6 +102,12 @@ def update_bank_account(request, bank_id):
     if (not bank) or (request.user != bank.user):
         return redirect('bank_detail')
 
+    selected_month = request.session['display_month']
+    selected_year = request.session['display_year']
+    
+    #Summary statistics section
+    summary_statistics = utils.summary_statistics_data(selected_month, selected_year, request.user)
+
     form = BankAccountForm(instance=bank)
     if request.method == 'POST':
         #store the old amount before the form is saved
@@ -110,7 +119,7 @@ def update_bank_account(request, bank_id):
             form.save()
 
             #create a transaction named as 'Manual adjustment' 
-            #if bank balance is changed
+            #if bank balance is changed by user
             new_amount = form.cleaned_data['balance']
             if new_amount > old_amount:
                 income_adjustment = utils.manual_adjustment(
@@ -134,10 +143,12 @@ def update_bank_account(request, bank_id):
                 expense_adjustment.amount += (old_amount - new_amount)
                 expense_adjustment.save()
 
-
         return redirect('bank_detail')
 
-    context = {'form': form}
+    context = {
+        'form': form,
+        **summary_statistics
+    }
     return render(request, 'update_bank_account.html', context)   
 
 @login_required(login_url='/user_login')
@@ -159,6 +170,9 @@ def transaction_detail(request):
     selected_month = request.session['display_month']
     selected_year = request.session['display_year']
 
+    #Summary statistics section
+    summary_statistics = utils.summary_statistics_data(selected_month, selected_year, request.user)
+
     income_form = IncomeForm(user=request.user)
     expense_form = ExpenseForm(user=request.user)
 
@@ -174,6 +188,7 @@ def transaction_detail(request):
         'transactions': transactions,
         'income_form': income_form,
         'expense_form': expense_form,
+        **summary_statistics
     }
     return render(request, 'transaction_detail.html', context)
 
@@ -195,37 +210,6 @@ def create_transaction(request, nature):
             
     return redirect('transaction_detail')
 
-def transaction_handler(request, model_form, instance):
-    """handle post request in update_transaction"""
-
-    #store the old amount before the form is saved
-    old_amount = instance.amount
-    old_bank = instance.bank
-
-    #save the form
-    form = model_form(request.user, request.POST, instance=instance)
-    if form.is_valid():
-        form.save()
-
-        new_amount = form.cleaned_data['amount']
-        new_bank = form.cleaned_data['bank']
-
-        #allocate the bank balance if the bank is changed
-        if new_bank != old_bank:
-            old_bank.alter_balance(operation='deduct', nature=instance.nature, 
-                amount=old_amount)
-            new_bank.alter_balance(operation='add', nature=instance.nature, 
-                amount=new_amount)
-
-        #change the bank balance if the amount of transaction is changed
-        elif new_amount != old_amount:
-            changed_amount = new_amount - old_amount
-            bank = form.cleaned_data['bank']
-            bank.alter_balance(operation='add', nature=instance.nature, 
-                amount=changed_amount)
-            
-    return redirect('transaction_detail')
-   
 @login_required(login_url='/user_login')
 def update_transaction(request, nature, transaction_id):
     transaction_model = Income if nature == 'income' else Expense
@@ -237,11 +221,20 @@ def update_transaction(request, nature, transaction_id):
     if (not transaction) or (request.user != transaction.user):
         return redirect('transaction_detail')
     
+    selected_month = request.session['display_month']
+    selected_year = request.session['display_year']
+    
+    #Summary statistics section
+    summary_statistics = utils.summary_statistics_data(selected_month, selected_year, request.user)
+
     form = transaction_form(instance=transaction, user=request.user)
     if request.method == 'POST':
         return transaction_handler(request, model_form=transaction_form, instance=transaction)
 
-    context = {'form':form}
+    context = {
+        'form':form,
+        **summary_statistics
+    }
     return render(request, 'update_transaction.html', context)
 
 @login_required(login_url='/user_login')
@@ -263,4 +256,34 @@ def remove_transaction(request, nature, transaction_id):
     transaction.delete()
     return redirect('transaction_detail')
 
+def transaction_handler(request, model_form, instance):
+    """handle POST request in update_transaction."""
+
+    #store some old values before the form is saved
+    old_amount = instance.amount
+    old_bank = instance.bank
+
+    #save the form
+    form = model_form(request.user, request.POST, instance=instance)
+    if form.is_valid():
+        form.save()
+
+        new_amount = form.cleaned_data['amount']
+        new_bank = form.cleaned_data['bank']
+
+        #allocate the bank balance if the bank is changed
+        if new_bank != old_bank:
+            old_bank.alter_balance(operation='deduct', nature=instance.nature, 
+                amount=old_amount)
+            new_bank.alter_balance(operation='add', nature=instance.nature, 
+                amount=new_amount)
+
+        #change the bank balance if only the amount of transaction is changed
+        #elif is used here to eliminate the possibility of changing bank
+        elif new_amount != old_amount:
+            changed_amount = new_amount - old_amount
+            new_bank.alter_balance(operation='add', nature=instance.nature, 
+                amount=changed_amount)
+            
+    return redirect('transaction_detail')
 

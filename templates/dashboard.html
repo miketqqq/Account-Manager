@@ -3,55 +3,6 @@
 {% block content %}
 
 
-<!-- Income & Expense Start -->
-<div class="container-fluid pt-4 px-4">
-    <div class="row g-4">
-         <!-- Net Asset Value -->
-        <div class="col-sm-6 col-xl-3">
-            <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
-                <div class="ms-3 col-9">
-                    <h6 class="mb-2">Net Asset Value</h6>
-                    <h6 class="mb-0">${{net_value}}</h6>
-                </div>
-                <i class="fa fa-coins fa-3x text-white col-3"></i>
-            </div>
-        </div>
-
-         <!-- Income & Expense -->
-        {% for main_type in data_set %}
-        <div class="col-sm-6 col-xl-3">
-            <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
-                <div class="ms-3 col-9">
-                    <h6 class="mb-2 {{main_type.nature}}-sub-total">{{main_type.nature|title}}</h6>
-                    <h6 class="mb-0">${{main_type.selected_month_total}}                        
-                        {% if main_type.monthly_change >= 0 %}
-                        <span class="monthly-change positive">(+{{main_type.monthly_change}})</span>
-                        {% else %}
-                        <span class="monthly-change negative">({{main_type.monthly_change}})</span>
-                        {% endif %}
-                    </h6>
-                </div>
-                <i class="fa fa-chart-line fa-3x text-white col-3"></i> 
-            </div>
-        </div>
-        {% endfor %}
-
-        <!-- Transaction Count -->
-        <div class="col-sm-6 col-xl-3">
-            <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
-                <div class="ms-3 col-9">
-                    <h6 class="mb-2">Transaction Count</h6>
-                    <h6 class="mb-0">{{transaction_count|default:0}}</h6>
-                </div>
-                <i class="fa fa-receipt fa-3x text-white col-3"></i>
-            </div>
-        </div>
-        
-    </div>
-</div>
-<!-- Income & Expense End -->
-
-
 <!-- Chart Start -->
 <div class="container-fluid pt-4 px-4">
     <div class="row g-4">
@@ -129,11 +80,11 @@
             <div class="col-12 col-sm-6 text-center text-sm-start">
                 &copy; <a href="#">Account Manager</a>, All Right Reserved. 
             </div>
-            <div class="col-12 col-sm-6 text-center text-sm-end">
+            <small class="col-12 col-sm-6 text-center text-sm-end" style="font-size: 1px;">
                 <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
                 Designed By <a href="https://htmlcodex.com" target="_blank">HTML Codex</a>
             Distributed By <a class="border-bottom" href="https://themewagon.com" target="_blank">ThemeWagon</a>
-            </div>
+            </small>
         </div>
     </div>
 </div>

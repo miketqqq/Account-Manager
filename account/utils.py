@@ -1,4 +1,11 @@
-from .models import *
+from .models import BankAccount, Expense, Income
+
+
+def get_net_asset_value(user):
+    '''calculate NAV from bank accounts.'''
+    banks = BankAccount.objects.filter(user=user)
+    return sum(banks.values_list('balance', flat=True))
+
 
 def main_type_data_set(main_type_model, selected_month, selected_year, user):
     """Return a set of data for income and expense models seperately"""
@@ -10,8 +17,8 @@ def main_type_data_set(main_type_model, selected_month, selected_year, user):
     selected_month_data = main_type_model.objects.filter(
         date__month=selected_month,
         date__year=selected_year,
-        user=user
-    )
+        user=user,
+    ).exclude(category='Manual adjustment')
 
     #if no transaction for that month, return 0
     if not selected_month_data:
@@ -49,7 +56,30 @@ def main_type_data_set(main_type_model, selected_month, selected_year, user):
     return data_set
 
 
+def summary_statistics_data(selected_month, selected_year, user):
+    '''get a set of data for the summary statistics section in front-end.'''
+
+    #NAV
+    net_value = get_net_asset_value(user)
+
+    #Income/Expense monthly total
+    income_data_set = main_type_data_set(Income, selected_month, selected_year, user)
+    expense_data_set = main_type_data_set(Expense, selected_month, selected_year, user)
+    data_set = [income_data_set, expense_data_set]
+
+    #transaction count
+    transaction_count = income_data_set['transaction_count'] + expense_data_set['transaction_count']
+
+    summary_statistics = {
+        'net_value': net_value,
+        'data_set': data_set,
+        'transaction_count': transaction_count,
+    }
+    return summary_statistics
+
+
 def manual_adjustment(model, date, bank, user):
+    '''create a transaction when the balance of an account is changed'''
     adjustment, _ = model.objects.get_or_create(
         detail = 'Manual adjustment',
         date = date,
