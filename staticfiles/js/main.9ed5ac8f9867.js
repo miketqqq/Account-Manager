@@ -234,6 +234,6 @@ if (remove_account_modal) {
 const summary_statistics = document.getElementById('Summary-Statistic');
 const user_login = document.getElementById('user-login');
 const user_register = document.getElementById('user-register');
-if (user_login || user_register) {
+if (login || user_register) {
     summary_statistics.style.display = 'none';
 }

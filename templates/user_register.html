@@ -3,7 +3,9 @@
 {% load crispy_forms_tags %}
 {% block content %}
 
-<div class="container-fluid pt-4 px-4">
+
+<!-- User Register Form Start -->
+<div id="user-register" class="container-fluid pt-4 px-4">
     <div class="bg-secondary p-4">
         <div class="justify-content-between text-white">
             <h2>Registration</h2>
@@ -15,12 +17,15 @@
 
             <div class="pt-2">
                 <p>Already have an account? <a href="/user_login">Login</a></p>
+                <h4>&gt&gt&gt Or use demo account:<a href="/demo_login"> Demo</a> &lt&lt&lt</h4>
             </div>
-            <h4>
+            <h4 style="color: red;">
                 {{form.errors}}
             </h4>
         </div>
     </div>
 </div>
+<!-- User Register Form End -->
+
 
 {% endblock%}

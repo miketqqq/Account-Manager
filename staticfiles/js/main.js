@@ -177,18 +177,18 @@ function income_category_chart(ctx3, ctx4) {
 };
 
 const ctx1 = document.getElementById('income-expense');
-if (ctx1 !== null) {
+if (ctx1) {
     income_expense_chart(ctx1)
 }
 
 const ctx2 = document.getElementById('bank-accounts');
-if (ctx2 !== null) {
+if (ctx2) {
     bank_account_chart(ctx2)
 }
 
 const ctx3 = document.getElementById('income-category');
 const ctx4 = document.getElementById('expense-category');
-if (ctx3 !== null && ctx4 !== null) {
+if (ctx3 && ctx4) {
     income_category_chart(ctx3, ctx4)
 }
 
@@ -221,12 +221,19 @@ function pass_url_to_modal(remove_modal){
 };
 
 const remove_transaction_modal = document.getElementById('remove-transaction-Modal')
-if (remove_transaction_modal !== null) {
+if (remove_transaction_modal) {
     pass_url_to_modal(remove_transaction_modal)
 }
 
 const remove_account_modal = document.getElementById('remove-account-Modal')
-if (remove_account_modal !== null) {
+if (remove_account_modal) {
     pass_url_to_modal(remove_account_modal)
 }
 
+
+const summary_statistics = document.getElementById('Summary-Statistic');
+const user_login = document.getElementById('user-login');
+const user_register = document.getElementById('user-register');
+if (user_login || user_register) {
+    summary_statistics.style.display = 'none';
+}
