@@ -65,6 +65,7 @@
             </nav>
             <!-- Navbar End -->
             
+            {% if user.is_authenticated %}
             <!-- Summary Statistic Start -->
             <div id="Summary-Statistic" class="container-fluid pt-4 px-4">
                 <div class="row g-4">
@@ -113,7 +114,8 @@
                 </div>
             </div>
             <!-- Summary Statistic End -->
-            
+            {% endif %}
+
             {% block content %} 
             {% endblock %}
 

@@ -214,9 +214,9 @@ function pass_url_to_modal(remove_modal){
         var button = event.relatedTarget; // Button that triggered the modal
         var remove_url = button.dataset.url; // Extract info from data-* attributes
         
-        const confirm_remove = document.getElementsByClassName('confirm-remove')[0];
-        confirm_remove.href = remove_url;
-        console.log(confirm_remove)
+        const confirm_remove = document.getElementById('confirm-remove');
+        //console.log(confirm_remove)
+        confirm_remove.action = remove_url;
     });
 };
 
@@ -230,10 +230,11 @@ if (remove_account_modal) {
     pass_url_to_modal(remove_account_modal)
 }
 
-
-const summary_statistics = document.getElementById('Summary-Statistic');
+//used django user.is_authenticated template tag to handle this problem.
+//remove summary statistics section in login and register pages
+/* const summary_statistics = document.getElementById('Summary-Statistic');
 const user_login = document.getElementById('user-login');
 const user_register = document.getElementById('user-register');
 if (user_login || user_register) {
     summary_statistics.style.display = 'none';
-}
+} */

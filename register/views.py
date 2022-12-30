@@ -5,6 +5,9 @@ from django.contrib import messages
 
 # Create your views here.
 def user_register(request):
+    if request.user.is_authenticated:
+        return redirect("dashboard")
+
     form = UserCreationForm()
 
     if request.method == "POST":
@@ -18,6 +21,9 @@ def user_register(request):
     return render(request, 'user_register.html', context)
 
 def user_login(request):
+    if request.user.is_authenticated:
+        return redirect("dashboard")
+
     if request.method == "POST":
         username = request.POST["username"]
         password = request.POST["password"]
@@ -33,7 +39,7 @@ def user_login(request):
 
 def user_logout(request):
     logout(request)
-    return redirect("dashboard")
+    return redirect("user_login")
 
 def demo_login(request):
     #to login as a demo user

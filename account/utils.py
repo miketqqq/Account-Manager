@@ -1,5 +1,5 @@
 from .models import BankAccount, Expense, Income
-
+from .constant import TODAY
 
 def get_net_asset_value(user):
     '''calculate NAV from bank accounts.'''
@@ -78,7 +78,7 @@ def summary_statistics_data(selected_month, selected_year, user):
     return summary_statistics
 
 
-def manual_adjustment(model, date, bank, user):
+def manual_adjustment(model, bank, user, date=TODAY):
     '''create a transaction when the balance of an account is changed'''
     adjustment, _ = model.objects.get_or_create(
         detail = 'Manual adjustment',

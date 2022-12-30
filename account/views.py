@@ -4,15 +4,16 @@ from django.contrib.auth.decorators import login_required
 # Create your views here.
 from .models import BankAccount, Transaction, Expense, Income
 from .forms import BankAccountForm, IncomeForm, ExpenseForm
+from functools import partial
 from account import utils
-import chart.utils as chart_utils
+from account.constant import TODAY
 
 
 @login_required(login_url='/user_login')
 def dashboard(request):
     if not request.session.get('display_month') or not request.session.get('display_year'):
-        request.session['display_month'] = chart_utils.today.month
-        request.session['display_year'] = chart_utils.today.year
+        request.session['display_month'] = TODAY.month
+        request.session['display_year'] = TODAY.year
 
     selected_month = request.session['display_month']
     selected_year = request.session['display_year']
@@ -121,25 +122,17 @@ def update_bank_account(request, bank_id):
             #create a transaction named as 'Manual adjustment' 
             #if bank balance is changed by user
             new_amount = form.cleaned_data['balance']
-            if new_amount > old_amount:
-                income_adjustment = utils.manual_adjustment(
-                    model = Income,
-                    date = chart_utils.today,
-                    bank = bank,
-                    user = request.user,
-                )
+            partial_manual_adjustment = partial(utils.manual_adjustment,
+                bank = bank,
+                user = request.user)
 
+            if new_amount > old_amount:
+                income_adjustment = partial_manual_adjustment(model=Income)
                 income_adjustment.amount += (new_amount - old_amount)
                 income_adjustment.save()
 
             elif new_amount < old_amount:
-                expense_adjustment = utils.manual_adjustment(
-                    model = Expense,
-                    date = chart_utils.today,
-                    bank = bank,
-                    user = request.user,
-                )
-
+                expense_adjustment = partial_manual_adjustment(model=Expense)
                 expense_adjustment.amount += (old_amount - new_amount)
                 expense_adjustment.save()
 
@@ -160,7 +153,9 @@ def remove_bank_ac(request, bank_id):
     if (not bank) or (request.user != bank.user):
         return redirect('bank_detail')
 
-    bank.delete()
+    if request.method == 'POST':
+        bank.delete()
+
     return redirect('bank_detail')
 
 
@@ -248,12 +243,14 @@ def remove_transaction(request, nature, transaction_id):
     if (not transaction) or (request.user != transaction.user):
         return redirect('transaction_detail')
 
-    #deduct the amount from the corresponding bank account.
-    amount = transaction.amount
-    bank = transaction.bank
-    bank.alter_balance(amount=amount, operation='deduct', nature=nature)
-    
-    transaction.delete()
+    if request.method == 'POST':
+        #deduct the amount from the corresponding bank account.
+        amount = transaction.amount
+        bank = transaction.bank
+        bank.alter_balance(amount=amount, operation='deduct', nature=nature)
+        
+        transaction.delete()
+        
     return redirect('transaction_detail')
 
 def transaction_handler(request, model_form, instance):

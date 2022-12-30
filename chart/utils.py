@@ -2,16 +2,14 @@ from django.db.models import Sum
 from django.db.models.functions import TruncMonth, Round
 
 from statistics import mean 
-import datetime
+from datetime import timedelta
+from account.constant import TODAY
 
-today = datetime.date.today()
-current_month = today.month
-
-def last_day_of_month(any_day):
+def last_day_of_month(first_day):
     # 31 days later, it's always next month
-    next_month = any_day + datetime.timedelta(days=31)
+    next_month = first_day + timedelta(days=31)
     # subtracting the number of the current day brings us back one month
-    return next_month - datetime.timedelta(days=next_month.day)
+    return next_month - timedelta(days=next_month.day)
 
 
 def group_by_month(transaction_data, sub_type='nature'):
@@ -27,7 +25,7 @@ def group_by_month(transaction_data, sub_type='nature'):
 
 def monthly_average(grouped_data):
     avg = grouped_data\
-        .filter(by_month__lte=today)\
+        .filter(by_month__lte=TODAY)\
         .values_list('sub_total', flat=True)
     return round(mean(avg), 0)
 

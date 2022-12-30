@@ -147,7 +147,10 @@
             </div>
         </div>
         <div class="modal-footer">
-            <a href="" class="btn btn-danger confirm-remove">Delete</a>
+            <form id="confirm-remove" action="" method="POST">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
             <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
         </div>
       </div>
