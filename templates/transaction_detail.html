@@ -142,14 +142,16 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-            <div class="d-flex align-items-center justify-content-between">
+            <div class="align-items-center justify-content-between">
                 <p>Are you sure you want to delete this transaction?</p>
+                <p>Please type <strong>DELETE</strong> to confirm.</p>
+                <input type="text" id="delete-text" class="form-control"> 
             </div>
         </div>
         <div class="modal-footer">
             <form id="confirm-remove" action="" method="POST">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-danger">Delete</button>
+                <button type="submit" id="delete-button" class="btn btn-danger" disabled>Delete</button>
             </form>
             <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
         </div>

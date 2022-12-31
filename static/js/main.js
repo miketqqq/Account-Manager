@@ -3,6 +3,7 @@ const green = "hsl(120, 100%, 25%)"  //green
 const white = "hsl(0, 100%, 100%)"  //white
 const grid_color = "hsl(0, 0%, 50%)"  //grey
 
+//Charts
 function income_expense_chart(ctx1) {
     fetch(ctx1.dataset.url)
     .then((response) => response.json())
@@ -192,7 +193,7 @@ if (ctx3 && ctx4) {
     income_category_chart(ctx3, ctx4)
 }
 
-
+//sidebar
 function set_sidebar_active_item(){
     var sidebar = document.getElementById('sidebar')
     var sidebar_items = sidebar.getElementsByClassName('nav-item')
@@ -208,7 +209,16 @@ function set_sidebar_active_item(){
 }
 set_sidebar_active_item()
 
+//hamburger sticker
+let hamberger = document.getElementsByClassName('sidebar-toggler')[0];
+hamberger.addEventListener("click", function(event){
+    let sidebar = document.getElementsByClassName('sidebar')[0];
+    let content = document.getElementsByClassName('content')[0];
+    sidebar.classList.toggle('open');
+    content.classList.toggle('open');
+})
 
+//modal
 function pass_url_to_modal(remove_modal){
     remove_modal.addEventListener("show.bs.modal", function (event) {
         var button = event.relatedTarget; // Button that triggered the modal
@@ -229,6 +239,14 @@ const remove_account_modal = document.getElementById('remove-account-Modal')
 if (remove_account_modal) {
     pass_url_to_modal(remove_account_modal)
 }
+
+//confirmation before deleting records.
+delete_text =  document.getElementById('delete-text');
+delete_text.addEventListener('input', (event) => {
+    delete_button =  document.getElementById('delete-button');
+    delete_button.disabled = (delete_text.value == 'DELETE')? false: true;
+});
+
 
 //used django user.is_authenticated template tag to handle this problem.
 //remove summary statistics section in login and register pages
