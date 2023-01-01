@@ -69,7 +69,7 @@
                         <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
                             <div class="ms-2 col-9">
                                 <h6 class="mb-2">Net Asset Value</h6>
-                                <h5 class="mb-0 Income-sub-total">${{net_value}}</h5>
+                                <h6 class="mb-0 Income-sub-total">${{net_value}}</h6>
                             </div>
                             <i class="fa fa-coins fa-3x text-white col-3"></i>
                         </div>
@@ -81,13 +81,13 @@
                         <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
                             <div class="ms-2 col-9">
                                 <h6 class="mb-2">{{main_type.nature}}</h6>
-                                <h5 class="mb-0 {{main_type.nature}}-sub-total">${{main_type.selected_month_total}}                        
+                                <h6 class="mb-0 {{main_type.nature}}-sub-total">${{main_type.selected_month_total}}                        
                                     {% if main_type.monthly_change >= 0 %}
-                                    <span class="monthly-change positive">(+{{main_type.monthly_change}})</span>
+                                    <small class="monthly-change">(+{{main_type.monthly_change}})</small>
                                     {% else %}
-                                    <span class="monthly-change negative">({{main_type.monthly_change}})</span>
+                                    <small class="monthly-change">({{main_type.monthly_change}})</small>
                                     {% endif %}
-                                </h5>
+                                </h6>
                             </div>
                             <i class="fa fa-chart-line fa-3x text-white col-3"></i> 
                         </div>
@@ -99,7 +99,7 @@
                         <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
                             <div class="ms-2 col-9">
                                 <h6 class="mb-2">Transaction Count</h6>
-                                <h5 class="mb-0">{{transaction_count|default:0}}</h5>
+                                <h6 class="mb-0">{{transaction_count|default:0}}</h6>
                             </div>
                             <i class="fa fa-receipt fa-3x text-white col-3"></i>
                         </div>
