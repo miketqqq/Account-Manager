@@ -179,50 +179,53 @@ function income_category_chart(ctx3, ctx4) {
 
 const ctx1 = document.getElementById('income-expense');
 if (ctx1) {
-    income_expense_chart(ctx1)
+    income_expense_chart(ctx1);
 }
 
 const ctx2 = document.getElementById('bank-accounts');
 if (ctx2) {
-    bank_account_chart(ctx2)
+    bank_account_chart(ctx2);
 }
 
 const ctx3 = document.getElementById('income-category');
 const ctx4 = document.getElementById('expense-category');
 if (ctx3 && ctx4) {
-    income_category_chart(ctx3, ctx4)
+    income_category_chart(ctx3, ctx4);
 }
 
 //sidebar
 function set_sidebar_active_item(){
-    var sidebar = document.getElementById('sidebar')
-    var sidebar_items = sidebar.getElementsByClassName('nav-item')
-    var path = window.location.pathname.replaceAll('/', '')
+    let sidebar = document.getElementById('sidebar');
+    let sidebar_items = sidebar.getElementsByClassName('nav-item');
+    let path = window.location.pathname.replaceAll('/', '');
 
     for (var i=0; i < sidebar_items.length; i++){
         if (sidebar_items[i].id == path){
-            sidebar_items[i].className += ' active'
+            sidebar_items[i].className += ' active';
         } else {
-            sidebar_items[i].className = sidebar_items[i].className.replace('active', '')
+            sidebar_items[i].className = sidebar_items[i].className.replace('active', '');
         }
     }
 }
-set_sidebar_active_item()
+set_sidebar_active_item();
 
 //hamburger sticker
-let hamberger = document.getElementsByClassName('sidebar-toggler')[0];
-hamberger.addEventListener("click", function(event){
-    let sidebar = document.getElementsByClassName('sidebar')[0];
-    let content = document.getElementsByClassName('content')[0];
+function toggle_sidebar(){
+    let sidebar = document.querySelector('.sidebar');
+    let content = document.querySelector('.content');
     sidebar.classList.toggle('open');
     content.classList.toggle('open');
+}
+let hambergers = document.querySelectorAll('.sidebar-toggler');
+hambergers.forEach(function(hamberger){
+    hamberger.addEventListener("click", toggle_sidebar);
 })
 
 //modal
 function pass_url_to_modal(remove_modal){
     remove_modal.addEventListener("show.bs.modal", function (event) {
-        var button = event.relatedTarget; // Button that triggered the modal
-        var remove_url = button.dataset.url; // Extract info from data-* attributes
+        let button = event.relatedTarget; // Button that triggered the modal
+        let remove_url = button.dataset.url; // Extract info from data-* attributes
         
         const confirm_remove = document.getElementById('confirm-remove');
         //console.log(confirm_remove)
@@ -230,20 +233,20 @@ function pass_url_to_modal(remove_modal){
     });
 };
 
-const remove_transaction_modal = document.getElementById('remove-transaction-Modal')
+const remove_transaction_modal = document.getElementById('remove-transaction-Modal');
 if (remove_transaction_modal) {
-    pass_url_to_modal(remove_transaction_modal)
+    pass_url_to_modal(remove_transaction_modal);
 }
 
-const remove_account_modal = document.getElementById('remove-account-Modal')
+const remove_account_modal = document.getElementById('remove-account-Modal');
 if (remove_account_modal) {
-    pass_url_to_modal(remove_account_modal)
+    pass_url_to_modal(remove_account_modal);
 }
 
 //confirmation before deleting records.
-delete_text =  document.getElementById('delete-text');
+let delete_text =  document.getElementById('delete-text');
 delete_text.addEventListener('input', (event) => {
-    delete_button =  document.getElementById('delete-button');
+    let delete_button =  document.getElementById('delete-button');
     delete_button.disabled = (delete_text.value == 'DELETE')? false: true;
 });
 

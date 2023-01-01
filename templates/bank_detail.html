@@ -14,10 +14,10 @@
             <table class="table text-start align-middle table-hover mb-0">
                 <thead>
                     <tr class="text-white">
-                        <th scope="col">Name</th>
-                        <th scope="col">Account Type</th>
-                        <th scope="col">Balance</th>
-                        <th colspan='2'></th>
+                        <th class="col-lg-3">Name</th>
+                        <th class="col-lg-3">Account Type</th>
+                        <th class="col-lg-3">Balance</th>
+                        <th class="col-lg-2" colspan='2'>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -26,11 +26,13 @@
                         <td>{{bank.bank_name}}</td>
                         <td>{{bank.account_type}}</td>
                         <td>${{bank.balance}}</td>
-                        <td><a href="{% url 'update_bank_account' bank.id %}">Edit</a></td>
+                        <td><a href="{% url 'update_bank_account' bank.id %}">
+                            <i class="fa fa-edit text-info"></i>
+                        </a></td>
                         <td><a data-url="{% url 'remove_bank_ac' bank.id %}" 
                             class="remove-bank-account" type="button" data-bs-toggle="modal" data-bs-target="#remove-account-Modal">
-                            Delete</a>
-                        </td>
+                            <i class="fa fa-trash text-danger"></i>
+                        </a></td>
                     </tr>
                     {% endfor %}
                 </tbody>

@@ -43,25 +43,27 @@
             </div>
         </div>
         <div class="table-responsive">
-            <table class="table table-sm text-start align-middle table-hover mb-0">
+            <table class="table table-sm text-start text-nowrap align-middle table-hover mb-0">
                 <thead>
                     <tr class="text-white">
-                        <th scope="col">Date</th>
-                        <th scope="col">Nature</th>
-                        <th scope="col">Category</th>
-                        <th scope="col">Detail</th>
-                        <th scope="col">Bank</th>
-                        <th scope="col">Amount</th>
+                        <th class="col-lg-2">Date</th>
+                        <th class="col-lg-3">Bank</th>
+                        <th class="col-lg-3">Detail</th>
+                        <th class="col-lg-2">Amount</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for transaction in transactions %}
                     <tr class="{{transaction.nature}}-item">
-                        <td class="transaction-amount">{{transaction.date}}</td>
-                        <td class="transaction-amount">{{transaction.nature|title}}</td>
-                        <td>{{transaction.category}}</td>
-                        <td>{{transaction.detail}}</td>
-                        <td>{{transaction.bank}}</td>
+                        <td>{{transaction.date}}</td>
+                        <td>
+                            <p class="my-auto pt-1"><b>{{transaction.bank}}</b></p>
+                            <p class="my-auto" style="font-size: 6px;">{{transaction.bank.account_type}}</p>
+                        </td>
+                        <td>
+                            <p class="my-auto pt-1"><b>{{transaction.detail}}</b></p>
+                            <p class="my-auto" style="font-size: 6px;">{{transaction.category}}</p>
+                        </td>
                         <td class="transaction-amount">${{transaction.amount}}</td>
                     </tr>
                     {% endfor %}

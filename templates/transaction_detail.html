@@ -33,7 +33,7 @@
 <!-- Transactions Table Start -->
 <div class="container-fluid pt-4 px-4">
     <div class="bg-secondary text-center rounded p-4">
-        <div class="d-flex align-items-center justify-content-between mb-4">
+        <div class="d-flex align-items-center justify-content-between mb-3">
             <h6 class="mb-0">Recent transactions</h6>
             <div>
                 <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#new-income-Modal">
@@ -45,32 +45,36 @@
             </div>
         </div>
         <div class="table-responsive">
-            <table class="table table-sm text-start align-middle table-hover mb-0">
+            <table class="table table-sm text-start text-nowrap align-middle table-hover mb-0">
                 <thead>
                     <tr class="text-white">
-                        <th scope="col">Date</th>
-                        <th scope="col">Nature</th>
-                        <th scope="col">Category</th>
-                        <th scope="col">Detail</th>
-                        <th scope="col">Bank</th>
-                        <th scope="col">Amount</th>
-                        <th colspan='2'></th>
+                        <th class="col-lg-2">Date</th>
+                        <th class="col-lg-2">Bank</th>
+                        <th class="col-lg-3">Detail</th>
+                        <th class="col-lg-2">Amount</th>
+                        <th class="col-lg-1" colspan='2'>Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for transaction in transactions %}
                     <tr class="{{transaction.nature}}-item">
-                        <td class="transaction-amount">{{transaction.date}}</td>
-                        <td class="transaction-amount">{{transaction.nature|title}}</td>
-                        <td>{{transaction.category}}</td>
-                        <td>{{transaction.detail}}</td>
-                        <td>{{transaction.bank}}</td>
+                        <td>{{transaction.date}}</td>
+                        <td>
+                            <p class="my-auto pt-1"><b>{{transaction.bank}}</b></p>
+                            <p class="my-auto" style="font-size: 6px;">{{transaction.bank.account_type}}</p>
+                        </td>
+                        <td>
+                            <p class="my-auto pt-1"><b>{{transaction.detail}}</b></p>
+                            <p class="my-auto" style="font-size: 6px;">{{transaction.category}}</p>
+                        </td>
                         <td class="transaction-amount">${{transaction.amount}}</td>
-                        <td><a href="{% url 'update_transaction' transaction.nature transaction.id %}">Edit</a></td>
+                        <td><a href="{% url 'update_transaction' transaction.nature transaction.id %}">
+                                <i class="fa fa-edit text-info"></i>
+                        </a></td>
                         <td><a data-url="{% url 'remove_transaction' 'transaction.nature' transaction.id %}" 
                             class="remove-transaction" type="button" data-bs-toggle="modal" data-bs-target="#remove-transaction-Modal">
-                            Delete</a>
-                        </td>
+                            <i class="fa fa-trash text-danger"></i>
+                        </a></td>
                     </tr>
                     {% endfor %}
                 </tbody>

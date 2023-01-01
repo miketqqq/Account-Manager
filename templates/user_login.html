@@ -11,23 +11,19 @@
             <form method="POST" action="">
                 {% csrf_token %}
                 <div class="form-group row py-2">
-                    <label for="inputUsername" class="col-sm-1 col-form-label">username</label>
-                    <div class="col-sm-11">
-                        <input type="text" class="form-control" id="inputUsername" name="username">
-                    </div>
+                    <label for="inputUsername" class="col-form-label">Username</label>
+                    <input type="text" class="form-control ms-2" id="inputUsername" name="username">
                 </div>
                 <div class="form-group row py-2 mb-2">
-                    <label for="inputPassword" class="col-sm-1 col-form-label">Password</label>
-                    <div class="col-sm-11">
-                        <input type="password" class="form-control" id="inputPassword" name="password">
-                    </div>
+                    <label for="inputPassword" class="col-form-label">Password</label>
+                    <input type="password" class="form-control ms-2" id="inputPassword" name="password">
                 </div>
                 <button type="submit" class="btn btn-info">Login</button>
             </form>
             <hr>
             <div class="pt-4">
                 <p>Don't have account? <a href="/user_register">Create one</a></p>
-                <h4>&gt&gt&gt Or use demo account:<a href="/demo_login"> Demo</a> &lt&lt&lt</h4>
+                <div class="text-nowrap fw-bold">&gt&gt&gt Or use demo account:<a href="/demo_login"> Demo</a> &lt&lt&lt</div>
             </div>
             <h4 style="color: red;">
                 {% for message in messages %}

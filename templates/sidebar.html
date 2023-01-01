@@ -2,7 +2,7 @@
 
 
 <!-- Sidebar Start -->
-<div class="sidebar pe-4 pb-3">
+<div class="sidebar pe-4 pb-3" style="z-index: 1030;">
     <nav class="navbar bg-secondary navbar-dark">
         <div class="d-flex align-items-center ms-4 mb-4 pt-4">
             <div class="position-relative">
@@ -19,9 +19,13 @@
 
         <div class="navbar-nav w-100" id="sidebar">
             <a href="/" class="nav-item nav-link" id=""><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
-            <a href="/bank_detail" class="nav-item nav-link" id="bank_detail"><i class="fa fa-laptop me-2"></i>Account</a>
+            <a href="/bank_detail" class="nav-item nav-link" id="bank_detail"><i class="fa fa-money-check me-2"></i>Account</a>
             <a href="/transaction_detail" class="nav-item nav-link" id="transaction_detail"><i class="fa fa-th me-2"></i>Transaction</a>
         </div>
     </nav>
+    <div class="position-absolute bottom-0 end-0 mx-4 my-4">
+        <a href="#" class="sidebar-toggler">
+        <i class="fa fa-arrow-left fa-2x"></i></a>
+    </div>
 </div>
 <!-- Sidebar End -->
