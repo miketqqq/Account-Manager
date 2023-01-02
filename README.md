@@ -14,4 +14,4 @@ https://account-manager-production.up.railway.app/
 
 ## Usage:
 Users can manage all of their personal accounts in a single application. 
-By recording their daily spendings, summary statistics will be generated accompany with nice looking graphs to generalize user's monthly spending.
+By recording their daily spendings, summary statistics will be generated accompanying nice looking graphs to generalize user's monthly spendings.
