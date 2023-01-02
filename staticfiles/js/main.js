@@ -1,7 +1,20 @@
-const red = "hsl(0, 100%, 50%)"  //red
-const green = "hsl(120, 100%, 25%)"  //green
-const white = "hsl(0, 100%, 100%)"  //white
-const grid_color = "hsl(0, 0%, 50%)"  //grey
+const red = "hsl(0, 100%, 50%)";  //red
+const green = "hsl(120, 100%, 45%)";  //green
+const white = "hsl(0, 100%, 100%)";  //white
+const grid_color = "hsl(0, 0%, 50%)";  //grey
+
+const income_color_list = [
+    'hsl(130, 80%, 50%)','hsl(90, 100%, 50%)', 
+    'hsl(170, 70%, 40%)', 'hsl(210, 70%, 40%)',
+    'hsl(240, 60%, 35%)','hsl(60, 100%, 50%)',
+];
+
+const expense_color_list = [
+    'hsl(0, 100%, 50%)', 'hsl(330, 100%, 50%)',
+    'hsl(40, 100%, 50%)', 'hsl(20, 100%, 50%)',
+    'hsl(300, 100%, 50%)', 'hsl(280, 100%, 50%)',
+    'hsl(260, 100%, 50%)', 'hsl(240, 100%, 50%)',
+];
 
 //Charts
 function income_expense_chart(ctx1) {
@@ -124,7 +137,7 @@ function bank_account_chart(ctx2) {
 };
 
 
-function income_category_chart(ctx3, ctx4) {
+function category_chart(ctx3, ctx4) {
     fetch(ctx3.dataset.url)
     .then((response) => response.json())
     .then((chart_data) => {
@@ -135,7 +148,7 @@ function income_category_chart(ctx3, ctx4) {
                 datasets: [{
                     label: 'Amount',
                     data: chart_data.income_amount,
-                    //backgroundColor: green,
+                    backgroundColor: income_color_list,
                 }]
             },
             options: {
@@ -158,7 +171,7 @@ function income_category_chart(ctx3, ctx4) {
                 datasets: [{
                     label: 'Amount',
                     data: chart_data.expense_amount,
-                    //backgroundColor: red,
+                    backgroundColor: expense_color_list,
                 }]
             },
             options: {
@@ -190,7 +203,7 @@ if (ctx2) {
 const ctx3 = document.getElementById('income-category');
 const ctx4 = document.getElementById('expense-category');
 if (ctx3 && ctx4) {
-    income_category_chart(ctx3, ctx4);
+    category_chart(ctx3, ctx4);
 }
 
 //sidebar
