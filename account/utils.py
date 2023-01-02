@@ -19,16 +19,6 @@ def main_type_data_set(main_type_model, selected_month, selected_year, user):
         date__year=selected_year,
         user=user,
     ).exclude(category='Manual adjustment')
-
-    #if no transaction for that month, return 0
-    if not selected_month_data:
-        data_set = {
-            'nature': nature,
-            'transaction_count': 0,
-            'current_month_total': 0,
-            'monthly_change': 0,
-        }
-        return data_set
         
     #transaction count
     transaction_count = selected_month_data.count()
@@ -42,10 +32,10 @@ def main_type_data_set(main_type_model, selected_month, selected_year, user):
         date__month=previous_month,
         date__year=selected_year if previous_month != 12 else (selected_year - 1),
         user=user
-    )
+    ).exclude(category='Manual adjustment')
+
     previous_month_total = sum(previous_month_data.values_list('amount', flat=True))
     monthly_change = round(selected_month_total - previous_month_total, 2)
-
 
     data_set = {
         'nature': nature,
