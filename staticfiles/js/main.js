@@ -258,10 +258,63 @@ if (remove_account_modal) {
 
 //confirmation before deleting records.
 let delete_text =  document.getElementById('delete-text');
-delete_text.addEventListener('input', (event) => {
-    let delete_button =  document.getElementById('delete-button');
-    delete_button.disabled = (delete_text.value == 'DELETE')? false: true;
-});
+if (delete_text){
+    delete_text.addEventListener('input', (event) => {
+        let delete_button =  document.getElementById('delete-button');
+        delete_button.disabled = (delete_text.value == 'DELETE')? false: true;
+    });
+}
+
+
+//traffic tracking related
+//get csrf token from cookies
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+//post request with csrf token
+async function traffic_tracker(url = '', data = {}) {
+    let csrftoken = getCookie('csrftoken');
+    let response = await fetch(url, {
+        method: 'POST', 
+        mode: 'same-origin', 
+        credentials: 'same-origin', 
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken
+        },
+        body: JSON.stringify(data) 
+    });
+}
+
+window.onload = (event) => {
+    height = window.screen.height;
+    width = window.screen.width;
+    url = '/on_load'
+    data = {
+        height,
+        width
+    }
+    traffic_tracker(url, data)
+}
+
+onbeforeunload = (event) => {
+    url = '/on_close'
+    traffic_tracker(url)
+}
+
 
 
 //used django user.is_authenticated template tag to handle this problem.

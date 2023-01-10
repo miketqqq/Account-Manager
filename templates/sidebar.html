@@ -4,13 +4,13 @@
 <!-- Sidebar Start -->
 <div class="sidebar pe-4 pb-3" style="z-index: 1030;">
     <nav class="navbar bg-secondary navbar-dark">
-        <div class="d-flex align-items-center ms-4 mb-4 pt-4">
+        <div class="d-flex align-items-center ms-4 mb-4 pt-5">
             <div class="position-relative">
                 <i class="fa fa-user fa-3x text-white"></i>
                 <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
             </div>
             <div class="ms-4">
-                <h5 class="mb-0">{{request.user}}</h5>
+                <h6 class="mb-0">{{request.user}}</h6>
                 <div>
                     <a href="{% url 'user_logout' %}" >logout</a>
                 </div>
@@ -29,9 +29,9 @@
         </div>
 
     </nav>
-    <div class="position-absolute bottom-0 end-0 mx-4 my-4">
+    <div class="position-absolute top-0 end-0 mx-2 my-3">
         <a href="#" class="sidebar-toggler">
-        <i class="fa fa-arrow-left fa-2x"></i></a>
+        <i class="fa fa-times fa-2x"></i></a>
     </div>
 </div>
 <!-- Sidebar End -->

@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'account',
     'chart',
     'register',
-
+    'traffic_tracker',
+    
     'crispy_forms',
 ]
 

@@ -23,4 +23,5 @@ urlpatterns = [
     path('', include('account.urls')),
     path('', include('register.urls')),
     path('chart/', include('chart.urls')),
+    path('', include('traffic_tracker.urls')),
 ]

@@ -85,6 +85,9 @@
         width: 100%;
         margin-left: 0;
     }
+    .fa.fa-times {
+        display: none;
+    }
 }
 
 @media (max-width: 991.98px) {
@@ -99,6 +102,10 @@
     .content {
         width: 100%;
         margin-left: 0;
+    }
+    .fa.fa-times {
+        opacity: 0.5;
+        color:white;
     }
 }
 
