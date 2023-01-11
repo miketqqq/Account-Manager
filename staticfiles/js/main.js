@@ -209,16 +209,16 @@ if (ctx3 && ctx4) {
 //sidebar
 function set_sidebar_active_item(){
     let sidebar = document.getElementById('sidebar');
-    let sidebar_items = sidebar.getElementsByClassName('nav-item');
+    let sidebar_items = sidebar.querySelectorAll('.nav-item');
     let path = window.location.pathname.replaceAll('/', '');
 
-    for (var i=0; i < sidebar_items.length; i++){
-        if (sidebar_items[i].id == path){
-            sidebar_items[i].className += ' active';
+    sidebar_items.forEach(item => {
+        if (item.id == path){
+            item.className += ' active';
         } else {
-            sidebar_items[i].className = sidebar_items[i].className.replace('active', '');
+            item.className = item.className.replace('active', '');
         }
-    }
+    })
 }
 set_sidebar_active_item();
 
@@ -299,6 +299,7 @@ async function traffic_tracker(url = '', data = {}) {
     });
 }
 
+//track the session
 window.onload = (event) => {
     height = window.screen.height;
     width = window.screen.width;
@@ -315,7 +316,26 @@ onbeforeunload = (event) => {
     traffic_tracker(url)
 }
 
+//track on click event for every buttons and a tag
+button = document.querySelectorAll('button')
+button.forEach(element => {
+    element.addEventListener('click', (event) =>{
+        detail = element.innerHTML
+        url = '/on_click_button'
+        data = { detail }
+        traffic_tracker(url, data)
+    })
+});
 
+a_tag = document.querySelectorAll('a')
+a_tag.forEach(element => {
+    element.addEventListener('click', (event) =>{
+        detail = element.href  
+        url = '/on_click_button'
+        data = { detail }
+        traffic_tracker(url, data)
+    })
+});
 
 //used django user.is_authenticated template tag to handle this problem.
 //remove summary statistics section in login and register pages

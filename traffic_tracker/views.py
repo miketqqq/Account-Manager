@@ -1,5 +1,5 @@
 from django.http import HttpResponse
-from .models import TrafficTracker
+from .models import TrafficTracker, ButtonTracker
 
 # Create your views here.
 from datetime import datetime
@@ -27,3 +27,17 @@ def on_close(request):
         tracker.save()
 
     return HttpResponse('close') 
+
+def on_click_button(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        detail = data['detail']
+        tracker_id = request.session['track_id'] 
+        tracker = TrafficTracker.objects.get(id=tracker_id)
+        button = ButtonTracker.objects.create(
+            session=tracker,
+            detail=detail,
+            click_time=datetime.now()
+        )
+
+    return HttpResponse('click') 
