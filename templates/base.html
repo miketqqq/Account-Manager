@@ -47,12 +47,15 @@
                         <a href="#" class="sidebar-toggler flex-shrink-0">
                         <i class="fa fa-bars fa-2x"></i></a>
                     </div>
-                    <div class="col-sm-4 col-lg-10 text-center">
+                    <div class="col-sm-4 col-lg-10 text-center d-flex justify-content-center">
                         {% if user.is_authenticated %}
                         {% now "j" as current_month %}
-                        <a class="btn btn-outline-info" href="{% url 'month_selector' 'previous' %}">&lt</a>
-                        <a class="btn btn-outline-info">{{ request.session.display_month|number_to_month }} {{ request.session.display_year }}</a>
-                        <a class="btn btn-outline-info" href="{% url 'month_selector' 'next' %}">&gt</a>
+                        <a class="btn btn-outline-info" href="{% url 'month_selector' 'previous' %}"><i class="fas fa-less-than"></i></a>
+                        <form action="{% url 'month_selector' 'select' %}" method="GET">
+                            <input type="month" id="year-month" name="year-month" class="btn btn-outline-info" onchange="submit()"
+                            value='{{ request.session.display_year }}-{{ request.session.display_month|stringformat:"02d"}}'>
+                        </form>
+                        <a class="btn btn-outline-info" href="{% url 'month_selector' 'next' %}"><i class="fas fa-greater-than"></i></a>
                         {% endif %}
                     </div>
                     <div class="col-1 for-symmetry"><a></a></div>

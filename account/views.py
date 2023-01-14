@@ -4,9 +4,10 @@ from django.contrib.auth.decorators import login_required
 # Create your views here.
 from .models import BankAccount, Transaction, Expense, Income
 from .forms import BankAccountForm, IncomeForm, ExpenseForm
-from functools import partial
+
 from account import utils
 from account.constant import TODAY
+from functools import partial
 
 
 @login_required(login_url='/user_login')
@@ -41,8 +42,8 @@ def dashboard(request):
 
 def month_selector(request, button):
     """user selects which month of data to display."""
-    month = request.session['display_month']
-    year = request.session['display_year']
+    month = int(request.session['display_month'])
+    year = int(request.session['display_year'])
 
     if button == 'previous':
         if month > 1:
@@ -56,11 +57,11 @@ def month_selector(request, button):
         else:
             month = 1
             year += 1
-    else:
-        month, year = button.split(" ")
+    elif button == 'select':
+        year, month = request.GET.get('year-month').split("-")
     
-    request.session['display_month'] = month
-    request.session['display_year'] = year
+    request.session['display_month'] = int(month)
+    request.session['display_year'] = int(year)
 
     return redirect(request.META['HTTP_REFERER'])
 
