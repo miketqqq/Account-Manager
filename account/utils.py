@@ -1,4 +1,4 @@
-from .models import BankAccount, Expense, Income
+from account.models import BankAccount, Expense, Income
 from .constant import TODAY
 
 def get_net_asset_value(user):
