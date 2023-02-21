@@ -71,7 +71,7 @@
                         <td><a href="{% url 'update_transaction' transaction.nature transaction.id %}">
                                 <i class="fa fa-edit text-info"></i>
                         </a></td>
-                        <td><a data-url="{% url 'remove_transaction' 'transaction.nature' transaction.id %}" 
+                        <td><a data-url="{% url 'remove_transaction' transaction.nature transaction.id %}" 
                             class="remove-transaction" type="button" data-bs-toggle="modal" data-bs-target="#remove-transaction-Modal">
                             <i class="fa fa-trash text-danger"></i>
                         </a></td>
